@@ -37,7 +37,7 @@ const Dashboard = () => {
       const nextIndex = (currentIndex + 1) % motivationalQuotes.length;
       setCurrentQuote(motivationalQuotes[nextIndex]);
       setIsAnimating(false);
-    }, 500); // Matches animation duration
+    }, 500);
   };
 
   useEffect(() => {
