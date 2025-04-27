@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import ThemeToggle from "../../components/ThemeToggle/ThemeToggle";
 import TargetDateForm from "../../components/TargetDateForm/TargetDateForm";
 import CountdownTimer from "../../components/CountdownTimer/CountdownTimer";
@@ -7,6 +8,7 @@ import StudyPlanList from "../../components/StudyPlans/StudyPlanList";
 import SoundPlayer from "../../components/SoundPlayer/SoundPlayer";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [darkMode, setDarkMode] = useState(false);
   const [targetDate, setTargetDate] = useState("");
   const [countdown, setCountdown] = useState("");
@@ -72,14 +74,18 @@ const Dashboard = () => {
   }, [targetDate]);
 
   return (
-    <div className="card">
+    <div className="whole-page">
+      <header className="app-header">
+        <h1>MindStream</h1>
+        <div className="header-actions">
+          <ThemeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
+          <button onClick={() => navigate("/")} className="logout-button">
+            Logout
+          </button>
+        </div>
+      </header>
       <div className={`app-container ${darkMode ? "dark-mode" : ""}`}>
         <div className="app-content">
-          <header className="app-header">
-            <h1>Countdown & Study Planner</h1>
-            <ThemeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
-          </header>
-
           <div className="motivational-container">
             <p
               className={`motivational-quote ${
@@ -90,47 +96,46 @@ const Dashboard = () => {
             </p>
           </div>
 
-          {!isTargetSet && (
-            <section className="card target-date-card">
-              <TargetDateForm
-                setTargetDate={setTargetDate}
+          <div className="cards-container">
+            {!isTargetSet && (
+              <section className="card target-date-card">
+                <TargetDateForm
+                  setTargetDate={setTargetDate}
+                  email={email}
+                  setEmail={setEmail}
+                  phone={phone}
+                  setPhone={setPhone}
+                  setCountdown={setCountdown}
+                  setIsTargetSet={setIsTargetSet}
+                />
+              </section>
+            )}
+
+            {countdown && isTargetSet && (
+              <section className="card countdown-card-bg">
+                <CountdownTimer
+                  countdown={countdown}
+                  setIsTargetSet={setIsTargetSet}
+                />
+              </section>
+            )}
+
+            <section className="card study-plan-form-card">
+              <StudyPlanForm plans={plans} setPlans={setPlans} />
+            </section>
+
+            <section className="card study-plan-list-card full-width-card">
+              <StudyPlanList
+                plans={plans}
+                setPlans={setPlans}
                 email={email}
-                setEmail={setEmail}
                 phone={phone}
-                setPhone={setPhone}
-                setCountdown={setCountdown}
-                setIsTargetSet={setIsTargetSet}
               />
             </section>
-          )}
-
-          {countdown && isTargetSet && (
-            <section className="card countdown-card-bg">
-              <CountdownTimer
-                countdown={countdown}
-                setIsTargetSet={setIsTargetSet}
-              />
-            </section>
-          )}
-
-          <section className="card study-plan-form-card">
-            <StudyPlanForm plans={plans} setPlans={setPlans} />
-          </section>
-
-          <section className="card study-plan-list-card">
-            <StudyPlanList
-              plans={plans}
-              setPlans={setPlans}
-              email={email}
-              phone={phone}
-            />
-          </section>
-
-          <section className="card sound-player-card">
-            <SoundPlayer />
-          </section>
+          </div>
         </div>
       </div>
+      <SoundPlayer />
     </div>
   );
 };

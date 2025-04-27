@@ -1,0 +1,146 @@
+/* Music Player Styles */
+.music-player {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(var(--card-bg), 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid var(--border-color);
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  z-index: 1000;
+}
+
+.player-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.control-button {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.control-button:hover {
+  transform: scale(1.1);
+}
+
+.control-button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.stop-button {
+  background: var(--accent-color);
+}
+
+.track-info {
+  flex: 1;
+  min-width: 150px;
+  font-size: 0.9rem;
+  color: var(--text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sound-options {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.sound-option {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  background: rgba(var(--bg-color-rgb), 0.2);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sound-option:hover {
+  background: rgba(var(--primary-color-rgb), 0.1);
+}
+
+.sound-option.active {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.volume-control {
+  min-width: 100px;
+  display: flex;
+  align-items: center;
+}
+
+.volume-control input {
+  width: 100%;
+  cursor: pointer;
+}
+
+/* Adjust main content to account for sticky player */
+.app-content {
+  padding-bottom: 70px; /* Height of the music player */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .music-player {
+    flex-direction: column;
+    padding: 0.75rem;
+    gap: 0.75rem;
+  }
+
+  .track-info {
+    order: -1;
+    width: 100%;
+    text-align: center;
+  }
+
+  .app-content {
+    padding-bottom: 120px; /* Increased for mobile layout */
+  }
+}
+
+.volume-control {
+  min-width: 100px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.volume-icon {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  color: var(--text-color);
+}
+
+.volume-control input {
+  width: 100%;
+  cursor: pointer;
+}

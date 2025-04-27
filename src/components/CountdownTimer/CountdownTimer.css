@@ -11,13 +11,16 @@
 }
 
 .countdown-card {
-  background: var(--card-bg);
+  background: rgba(var(--card-bg-rgb), 0.7); /* Semi-transparent background */
+  backdrop-filter: blur(16px); /* Frosted blur effect */
+  -webkit-backdrop-filter: blur(16px); /* Safari support */
   border-radius: 8px;
   padding: 1.5rem 0.5rem;
   box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
   align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border for contrast */
 }
 
 .countdown-value {
@@ -50,11 +53,11 @@
   padding: 0.5rem;
   border-radius: 50%;
   transition: all 0.2s ease;
-  color: var(--text-color);
+  color: #ffff;
 }
 
 .edit-button-ct:hover {
-  background-color: var(--border-color);
+  background-color: #333333;
   transform: scale(1.1);
 }
 

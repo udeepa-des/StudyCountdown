@@ -1,17 +1,24 @@
-import { useTheme } from '../../context/ThemeContext';
-import './ThemeToggle.css';
+import { useTheme } from "../../context/ThemeContext";
+import "./ThemeToggle.css";
 
 const ThemeToggle = () => {
-    const { darkMode, setDarkMode } = useTheme();
+  const { darkMode, setDarkMode } = useTheme();
 
-    return (
-        <button
-            onClick={() => setDarkMode(!darkMode)}
-            className={`theme-toggle ${darkMode ? 'dark' : 'light'}`}
-        >
-            {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
-        </button>
-    );
+  return (
+    <label className="theme-toggle-container" aria-label="Toggle dark mode">
+      <input
+        type="checkbox"
+        checked={darkMode}
+        onChange={() => setDarkMode(!darkMode)}
+        className="theme-toggle-input"
+      />
+      <span className="theme-toggle-slider">
+        <span className={`theme-toggle-icon ${darkMode ? "moon" : "sun"}`}>
+          {darkMode ? "🌙" : "☀️"}
+        </span>
+      </span>
+    </label>
+  );
 };
 
 export default ThemeToggle;

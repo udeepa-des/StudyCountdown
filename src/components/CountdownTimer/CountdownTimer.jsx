@@ -23,7 +23,6 @@ const CountdownTimer = ({ countdown, setIsTargetSet }) => {
   return (
     <section className="countdown-container">
       <div className="countdown-header">
-        <h2>Time Remaining</h2>
         <div className="edit-button-ct-container">
           <button
             onClick={() => setIsTargetSet(false)}

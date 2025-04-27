@@ -1,0 +1,133 @@
+/* Auth.css */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-image: url("../../assets/backgrounds/login-bg.jpg"); /* <-- add your background image path */
+  background-size: cover; /* cover the whole screen */
+  background-position: center; /* center the image */
+  background-repeat: no-repeat; /* no repeating */
+  padding: 2rem;
+  position: relative;
+}
+
+.auth-card {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  padding: 2.5rem;
+  box-shadow: var(--shadow);
+  width: 100%;
+  max-width: 450px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.auth-card h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--primary-color);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
+.auth-input {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: rgba(var(--card-bg-rgb), 0.6);
+  color: var(--text-color);
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+}
+
+.auth-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 0.5rem;
+}
+
+.auth-button:hover {
+  background-color: var(--secondary-color);
+  transform: translateY(-1px);
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.auth-toggle {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  cursor: pointer;
+  font-weight: 500;
+  margin-left: 0.5rem;
+  padding: 0.25rem;
+}
+
+.auth-toggle:hover {
+  text-decoration: underline;
+}
+
+/* Dark mode adjustments */
+.dark-mode .auth-card {
+  background-color: rgba(var(--dark-card-bg-rgb), 0.9);
+}
+
+.dark-mode .auth-input {
+  background-color: rgba(var(--dark-card-bg-rgb), 0.6);
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 1.5rem;
+  }
+}
+
+/* .auth-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+} */
+
+/* Bring the auth card above the overlay */
+/* .auth-card {
+  position: relative;
+  z-index: 2;
+} */

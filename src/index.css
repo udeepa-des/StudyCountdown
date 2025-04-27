@@ -12,6 +12,9 @@
   --border-color: #e9ecef;
   --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   --hover-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+  --primary-color-rgb: 67, 97, 238;
+  --card-bg-rgb: 255, 255, 255;
+  --bg-color-rgb: 248, 249, 250;
 
   /* Dark Theme */
   --dark-primary: #3a86ff;
@@ -25,6 +28,8 @@
   --dark-border: #333333;
   --dark-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   --dark-hover-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
+  --dark-card-bg-rgb: 30, 30, 30;
+  --dark-bg-rgb: 18, 18, 18;
 }
 
 * {
@@ -35,6 +40,11 @@
 
 html {
   font-size: 16px;
+  /* background: linear-gradient(
+    135deg,
+    rgba(var(--bg-color-rgb), 1) 0%,
+    rgba(var(--bg-color-rgb), 0.8) 100%
+  ); */
 }
 
 body {
@@ -58,6 +68,12 @@ body.dark-mode {
   --border-color: var(--dark-border);
   --shadow: var(--dark-shadow);
   --hover-shadow: var(--dark-hover-shadow);
+  --card-bg-rgb: var(--dark-card-bg-rgb);
+  --bg-color-rgb: var(--dark-bg-rgb);
+}
+
+.dark-mode {
+  --border-color: rgba(255, 255, 255, 0.1);
 }
 
 h1,
@@ -72,6 +88,7 @@ h6 {
 }
 
 h1 {
+  font-family: Goldman;
   font-size: 2.5rem;
 }
 
@@ -88,6 +105,32 @@ a {
   color: var(--primary-color);
 }
 
+/* Dashboard.css additions */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logout-button {
+  background: none;
+  border: 1px solid var(--accent-color);
+  color: var(--accent-color);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.logout-button:hover {
+  background-color: rgba(247, 37, 133, 0.1);
+}
+
+.dark-mode .logout-button {
+  border-color: var(--dark-accent);
+  color: var(--dark-accent);
+}
+
 button {
   cursor: pointer;
   font-family: inherit;
@@ -101,11 +144,18 @@ select {
   font-size: inherit;
 }
 
+.whole-page {
+  /* background-image: url("./assets/backgrounds/main-bg.png"); */
+}
+
 .app-container {
   min-height: 100vh;
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
+  background-size: cover; /* Optional: makes sure the image covers the entire container */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .app-header {
@@ -113,8 +163,28 @@ select {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
-  padding-bottom: 1rem;
+  padding: 1rem;
   border-bottom: 1px solid var(--border-color);
+  position: sticky; /* Make the header sticky */
+  top: 0; /* Stick to the top */
+  z-index: 10; /* Ensure it stays on top of other content */
+
+  background: rgba(var(--card-bg), 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Two columns of equal width */
+  gap: 1.5rem; /* Space between cards */
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .cards-container {
+    grid-template-columns: 1fr; /* Single column on smaller screens */
+  }
 }
 
 .card {
@@ -124,6 +194,16 @@ select {
   box-shadow: var(--shadow);
   margin-bottom: 1.5rem;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px); /* For Safari */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  min-height: 300px; /* Or whatever height works for your content */
+  display: flex;
+  flex-direction: column;
+}
+
+.full-width-card {
+  grid-column: 1 / -1; /* Spans all columns */
 }
 
 .card:hover {
@@ -152,7 +232,9 @@ select {
   padding: 0.75rem 1rem;
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  background-color: var(--card-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  background-color: rgba(var(--card-bg-rgb), 0.6);
   color: var(--text-color);
   width: 100%;
 }
@@ -176,7 +258,6 @@ select {
   border-radius: 8px;
   font-weight: 500;
   transition: all 0.2s ease;
-  width: 20%;
 }
 
 .primary-button:hover {
@@ -245,7 +326,9 @@ select {
   align-items: center;
   padding: 1rem;
   border-radius: 8px;
-  background-color: var(--bg-color);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  background-color: rgba(var(--bg-color-rgb), 0.6);
   margin-bottom: 0.75rem;
   transition: all 0.2s ease;
 }
@@ -365,10 +448,19 @@ select {
   background-position: center;
   background-repeat: no-repeat;
   z-index: 1;
+  background-color: rgba(var(--card-bg-rgb), 0.9);
+}
+
+@supports (backdrop-filter: blur(16px)) or (-webkit-backdrop-filter: blur(16px)) {
+  .card {
+    background-color: rgba(var(--card-bg-rgb), 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
 }
 
 .card::before {
-  content: "";
+  content: none;
   position: absolute;
   top: 0;
   left: 0;
@@ -389,7 +481,7 @@ select {
 }
 
 .countdown-card-bg {
-  background-image: url("./assets/backgrounds/countdown-bg.jpg");
+  background-image: url("./assets/backgrounds/countdown-bg.png");
 }
 
 .study-plan-form-card {

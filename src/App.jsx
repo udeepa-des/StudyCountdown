@@ -1,20 +1,16 @@
-import { useState } from "react";
-import Dashboard from "./pages/dashboard/dashboard";
-import "./App.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Auth from "./pages/Auth/Auth";
+import Dashboard from "./pages/Dashboard/Dashboard";
 
 function App() {
-  const [darkMode, setDarkMode] = useState(() => {
-    // Initialize from localStorage or prefer-color-scheme
-    const savedMode = localStorage.getItem("darkMode");
-    return savedMode
-      ? JSON.parse(savedMode)
-      : window.matchMedia("(prefers-color-scheme: dark)").matches;
-  });
-
   return (
-    <>
-      <Dashboard></Dashboard>
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Auth />} />
+        <Route path="/login" element={<Auth />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </Router>
   );
 }
 
