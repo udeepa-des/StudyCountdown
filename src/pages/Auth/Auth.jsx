@@ -9,6 +9,8 @@ const Auth = () => {
     password: "",
     name: "",
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -21,19 +23,27 @@ const Auth = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
+
     try {
       const endpoint = isLogin ? "/api/login" : "/api/register";
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000"; // Fallback
+      // Use VITE_API_URL if set, otherwise use current origin for same-domain requests
+      const apiUrl = import.meta.env.VITE_API_URL || "";
 
       const response = await fetch(`${apiUrl}${endpoint}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Authentication failed");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          errorData.error || errorData.message || "Authentication failed"
+        );
       }
 
       const { user, token } = await response.json();
@@ -41,7 +51,9 @@ const Auth = () => {
       navigate("/dashboard");
     } catch (err) {
       console.error("Auth error:", err);
-      alert(err.message || "Something went wrong");
+      setError(err.message || "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -49,6 +61,8 @@ const Auth = () => {
     <div className="auth-container">
       <div className="auth-card">
         <h2>{isLogin ? "Welcome Back" : "Create Account"}</h2>
+
+        {error && <div className="auth-error">{error}</div>}
 
         <form onSubmit={handleSubmit} className="auth-form">
           {!isLogin && (
@@ -93,8 +107,8 @@ const Auth = () => {
             />
           </div>
 
-          <button type="submit" className="auth-button">
-            {isLogin ? "Login" : "Sign Up"}
+          <button type="submit" className="auth-button" disabled={loading}>
+            {loading ? "Processing..." : isLogin ? "Login" : "Sign Up"}
           </button>
         </form>
 
@@ -104,6 +118,7 @@ const Auth = () => {
             <button
               onClick={() => setIsLogin(!isLogin)}
               className="auth-toggle"
+              type="button"
             >
               {isLogin ? "Sign up" : "Login"}
             </button>
