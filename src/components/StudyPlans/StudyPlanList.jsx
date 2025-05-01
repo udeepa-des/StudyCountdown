@@ -1,16 +1,16 @@
 import StudyPlanItem from "./StudyPlanItem";
 
 const StudyPlanList = ({ plans, setPlans, email, phone }) => {
-  const togglePlanCompletion = (id) => {
+  const togglePlanCompletion = async (id) => {
     const updatedPlans = plans.map((plan) =>
       plan.id === id ? { ...plan, completed: !plan.completed } : plan
     );
-    setPlans(updatedPlans);
+    await setPlans(updatedPlans);
   };
 
-  const deletePlan = (id) => {
+  const deletePlan = async (id) => {
     const updatedPlans = plans.filter((plan) => plan.id !== id);
-    setPlans(updatedPlans);
+    await setPlans(updatedPlans);
   };
 
   return (

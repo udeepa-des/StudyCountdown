@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Auth.css";
+import { successToast, errorToast, loadingToast } from "../../utils/toast";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -28,7 +29,6 @@ const Auth = () => {
 
     try {
       const endpoint = isLogin ? "/api/login" : "/api/register";
-      // Use VITE_API_URL if set, otherwise use current origin for same-domain requests
       const apiUrl = import.meta.env.VITE_API_URL || "";
 
       const response = await fetch(`${apiUrl}${endpoint}`, {
@@ -41,12 +41,14 @@ const Auth = () => {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(
-          errorData.error || errorData.message || "Authentication failed"
-        );
+        errorToast(errorData.error || "Authentication failed");
+        throw new Error(errorData.error || "Authentication failed");
       }
 
       const { user, token } = await response.json();
+      successToast(
+        isLogin ? "Successfully logged in!" : "Account created successfully!"
+      );
       localStorage.setItem("token", token);
       navigate("/dashboard");
     } catch (err) {

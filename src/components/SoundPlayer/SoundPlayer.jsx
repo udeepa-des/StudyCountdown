@@ -4,6 +4,8 @@ import {
   FaVolumeOff,
   FaVolumeDown,
   FaVolumeUp,
+  FaChevronUp,
+  FaChevronDown,
 } from "react-icons/fa";
 import Rain1 from "../../assets/sounds/calm-thunderstorm-in-the-jungle-2415.wav";
 import Rain2 from "../../assets/sounds/rain-ambien-and-thunder-1256.wav";
@@ -16,7 +18,9 @@ const SoundPlayer = () => {
   const [currentSound, setCurrentSound] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const [volume, setVolume] = useState(0.7); // Default volume
+  const [volume, setVolume] = useState(0.7);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   const sounds = {
     rain1: { name: "Thunderstorm", file: Rain1 },
@@ -24,6 +28,15 @@ const SoundPlayer = () => {
     river: { name: "Forest River", file: River },
     waves: { name: "Ocean Waves", file: Waves },
   };
+
+  // Check for mobile view on resize
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Update volume when audio changes
   useEffect(() => {
@@ -83,7 +96,10 @@ const SoundPlayer = () => {
     }
   };
 
-  // Get appropriate speaker icon based on volume/mute state
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
+
   const getSpeakerIcon = () => {
     if (isMuted || volume === 0) return <FaVolumeMute />;
     if (volume < 0.3) return <FaVolumeOff />;
@@ -92,52 +108,123 @@ const SoundPlayer = () => {
   };
 
   return (
-    <div className="music-player">
-      <div className="player-controls">
-        <button
-          onClick={togglePlayPause}
-          className={`control-button ${!currentSound ? "disabled" : ""}`}
-          disabled={!currentSound}
-        >
-          {isPlaying ? "⏸" : "▶"}
-        </button>
-        <button onClick={stopSound} className="control-button stop-button">
-          ⏹
-        </button>
-      </div>
+    <div
+      className={`music-player ${isMobile ? "mobile" : ""} ${
+        isExpanded ? "expanded" : ""
+      }`}
+    >
+      {isMobile && (
+        <div className="expand-toggle" onClick={toggleExpand}>
+          {isExpanded ? <FaChevronDown /> : <FaChevronUp />}
+        </div>
+      )}
 
-      <div className="track-info">
-        {currentSound ? (
-          <span>Now Playing: {sounds[currentSound].name}</span>
-        ) : (
-          <span>No track selected</span>
+      {isMobile && !isExpanded && (
+        <div className="collapsed">
+          <div className="collapsed-controls">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                togglePlayPause();
+              }}
+              className={`control-button ${!currentSound ? "disabled" : ""}`}
+              disabled={!currentSound}
+            >
+              {isPlaying ? "⏸" : "▶"}
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                stopSound();
+              }}
+              className="control-button stop-button"
+            >
+              ⏹
+            </button>
+          </div>
+          <div className="collapsed-sound">
+            {currentSound ? sounds[currentSound].name : "Sound Player"}
+          </div>
+          <div className="collapsed-volume">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleMute();
+              }}
+              className="volume-icon"
+            >
+              {getSpeakerIcon()}
+            </button>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={isMuted ? 0 : volume}
+              onChange={handleVolumeChange}
+              onClick={(e) => e.stopPropagation()}
+              className="collapsed-volume-slider"
+            />
+          </div>
+        </div>
+      )}
+
+      <div className="player-content">
+        {(!isMobile || isExpanded) && (
+          <>
+            <div className="player-controls">
+              <button
+                onClick={togglePlayPause}
+                className={`control-button ${!currentSound ? "disabled" : ""}`}
+                disabled={!currentSound}
+              >
+                {isPlaying ? "⏸" : "▶"}
+              </button>
+              <button
+                onClick={stopSound}
+                className="control-button stop-button"
+              >
+                ⏹
+              </button>
+            </div>
+
+            <div className="track-info">
+              {currentSound ? (
+                <span>Now Playing: {sounds[currentSound].name}</span>
+              ) : (
+                <span>No track selected</span>
+              )}
+            </div>
+
+            <div className="sound-options">
+              {Object.keys(sounds).map((sound) => (
+                <button
+                  key={sound}
+                  onClick={() => playSound(sound)}
+                  className={`sound-option ${
+                    currentSound === sound ? "active" : ""
+                  }`}
+                >
+                  {sounds[sound].name}
+                </button>
+              ))}
+            </div>
+
+            <div className="volume-control">
+              <button onClick={toggleMute} className="volume-icon">
+                {getSpeakerIcon()}
+              </button>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={isMuted ? 0 : volume}
+                onChange={handleVolumeChange}
+              />
+            </div>
+          </>
         )}
-      </div>
-
-      <div className="sound-options">
-        {Object.keys(sounds).map((sound) => (
-          <button
-            key={sound}
-            onClick={() => playSound(sound)}
-            className={`sound-option ${currentSound === sound ? "active" : ""}`}
-          >
-            {sounds[sound].name}
-          </button>
-        ))}
-      </div>
-
-      <div className="volume-control">
-        <button onClick={toggleMute} className="volume-icon">
-          {getSpeakerIcon()}
-        </button>
-        <input
-          type="range"
-          min="0"
-          max="1"
-          step="0.01"
-          value={isMuted ? 0 : volume}
-          onChange={handleVolumeChange}
-        />
       </div>
     </div>
   );

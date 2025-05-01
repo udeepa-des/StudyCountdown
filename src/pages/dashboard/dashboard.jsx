@@ -6,6 +6,37 @@ import CountdownTimer from "../../components/CountdownTimer/CountdownTimer";
 import StudyPlanForm from "../../components/StudyPlans/StudyPlanForm";
 import StudyPlanList from "../../components/StudyPlans/StudyPlanList";
 import SoundPlayer from "../../components/SoundPlayer/SoundPlayer";
+import axios from "axios";
+
+axios.defaults.baseURL =
+  import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+// Add a request interceptor to include the auth token
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Add a response interceptor to handle errors
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      // Handle unauthorized access (e.g., redirect to login)
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -16,6 +47,7 @@ const Dashboard = () => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [isTargetSet, setIsTargetSet] = useState(false);
+  const [userId, setUserId] = useState("");
 
   const motivationalQuotes = [
     "The future belongs to those who believe in the beauty of their dreams. - Eleanor Roosevelt",
@@ -29,6 +61,40 @@ const Dashboard = () => {
   const [currentQuote, setCurrentQuote] = useState(motivationalQuotes[0]);
   const [isAnimating, setIsAnimating] = useState(false);
   const quoteRef = useRef();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          navigate("/");
+          return;
+        }
+
+        const response = await axios.get("/api/user", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setUserId(response.data._id);
+        if (response.data.targetDate) {
+          setTargetDate(
+            new Date(response.data.targetDate).toISOString().split("T")[0]
+          );
+          setIsTargetSet(true);
+        }
+        if (response.data.studyPlans) {
+          setPlans(response.data.studyPlans);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        navigate("/");
+      }
+    };
+
+    fetchUserData();
+  }, [navigate]);
 
   const changeQuote = () => {
     setIsAnimating(true);
@@ -73,10 +139,68 @@ const Dashboard = () => {
     return () => clearInterval(interval);
   }, [targetDate]);
 
+  // Update this function to save to the backend
+  const handleSetTargetDate = async (date, userEmail, userPhone) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.put(
+        "/api/target-date",
+        { targetDate: date },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setTargetDate(date);
+      setEmail(userEmail);
+      setPhone(userPhone);
+      setIsTargetSet(true);
+    } catch (error) {
+      console.error("Error setting target date:", error);
+    }
+  };
+
+  // Update this to save plans to the backend
+  const handleAddPlan = async (newPlan) => {
+    try {
+      const updatedPlans = [...plans, newPlan];
+      const token = localStorage.getItem("token");
+
+      await axios.put("/api/plans", updatedPlans, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setPlans(updatedPlans);
+    } catch (error) {
+      console.error("Error adding plan:", error);
+    }
+  };
+
+  // Update this to save plan changes to the backend
+  const handleUpdatePlans = async (updatedPlans) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      await axios.put("/api/plans", updatedPlans, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setPlans(updatedPlans);
+    } catch (error) {
+      console.error("Error updating plans:", error);
+    }
+  };
+
   return (
     <div className="whole-page">
       <header className="app-header">
-        <h1>MindStream</h1>
+        <h1>MindStreamer</h1>
         <div className="header-actions">
           <ThemeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
           <button onClick={() => navigate("/")} className="logout-button">
@@ -100,7 +224,7 @@ const Dashboard = () => {
             {!isTargetSet && (
               <section className="card target-date-card">
                 <TargetDateForm
-                  setTargetDate={setTargetDate}
+                  setTargetDate={handleSetTargetDate}
                   email={email}
                   setEmail={setEmail}
                   phone={phone}
@@ -121,13 +245,13 @@ const Dashboard = () => {
             )}
 
             <section className="card study-plan-form-card">
-              <StudyPlanForm plans={plans} setPlans={setPlans} />
+              <StudyPlanForm plans={plans} setPlans={handleAddPlan} />
             </section>
 
             <section className="card study-plan-list-card full-width-card">
               <StudyPlanList
                 plans={plans}
-                setPlans={setPlans}
+                setPlans={handleUpdatePlans}
                 email={email}
                 phone={phone}
               />

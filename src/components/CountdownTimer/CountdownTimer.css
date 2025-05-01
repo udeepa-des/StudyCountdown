@@ -69,12 +69,40 @@
 /* Responsive design for smaller screens */
 @media (max-width: 768px) {
   .countdown-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr); /* Keep 4 columns */
+    gap: 0.5rem; /* Reduce gap between items */
+  }
+
+  .countdown-card {
+    padding: 1rem 0.25rem; /* Reduce padding */
+  }
+
+  .countdown-value {
+    font-size: 1.8rem; /* Reduce font size */
+  }
+
+  .countdown-label {
+    font-size: 0.8rem; /* Reduce label size */
   }
 }
 
 @media (max-width: 480px) {
   .countdown-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(4, 1fr); /* Keep 4 columns */
+    gap: 0.25rem; /* Further reduce gap */
+  }
+
+  .countdown-card {
+    padding: 0.75rem 0.1rem; /* Further reduce padding */
+  }
+
+  .countdown-value {
+    font-size: 1.5rem; /* Further reduce font size */
+    margin-bottom: 0.25rem;
+  }
+
+  .countdown-label {
+    font-size: 0.7rem; /* Further reduce label size */
+    letter-spacing: 0.5px;
   }
 }

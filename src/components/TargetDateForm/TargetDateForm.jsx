@@ -16,8 +16,8 @@ const TargetDateForm = ({
     e.preventDefault();
     if (!selectedDate) return;
 
-    setTargetDate(selectedDate);
-    setCountdown("");
+    setTargetDate(selectedDate, email, phone);
+    setCountdown("Calculating..");
     setIsTargetSet(true);
   };
 
