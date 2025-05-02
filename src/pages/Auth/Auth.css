@@ -4,7 +4,7 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-image: url("../../assets/backgrounds/login-bg.jpg"); /* <-- add your background image path */
+  background-image: url("../../assets/backgrounds/login-bg.jpg");
   background-size: cover; /* cover the whole screen */
   background-position: center; /* center the image */
   background-repeat: no-repeat; /* no repeating */
@@ -13,7 +13,7 @@
 }
 
 .auth-card {
-  background-color: var(--card-bg);
+  background-color: rgba(var(--card-bg-rgb), 0.9);
   border-radius: 12px;
   padding: 2.5rem;
   box-shadow: var(--shadow);
@@ -33,13 +33,11 @@
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
 }
 
 .form-group label {
@@ -118,16 +116,32 @@
   }
 }
 
-/* .auth-container::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 1;
-} */
-
-/* Bring the auth card above the overlay */
-/* .auth-card {
+.password-group {
   position: relative;
-  z-index: 2;
-} */
+}
+
+.password-input-container {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.password-toggle:hover {
+  color: #333;
+}
+
+.auth-input {
+  width: 100%;
+  padding-right: 60px; /* Make space for the toggle button */
+}

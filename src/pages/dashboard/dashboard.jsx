@@ -6,6 +6,21 @@ import CountdownTimer from "../../components/CountdownTimer/CountdownTimer";
 import StudyPlanForm from "../../components/StudyPlans/StudyPlanForm";
 import StudyPlanList from "../../components/StudyPlans/StudyPlanList";
 import SoundPlayer from "../../components/SoundPlayer/SoundPlayer";
+import ProfilePopup from "../../components/ProfilePopup/ProfilePopup";
+import SettingsModal from "../../components/SettingsModal/SettingsModal";
+import Astronaut from "../../assets/avatars/astronaut.png";
+import Bee from "../../assets/avatars/bee.png";
+import Bat from "../../assets/avatars/Bat.png";
+import Boy from "../../assets/avatars/boy.png";
+import Donkey from "../../assets/avatars/donkey.png";
+import Fox from "../../assets/avatars/fox.png";
+import Girl from "../../assets/avatars/girl.png";
+import Gorilla from "../../assets/avatars/gorilla.png";
+import Mutant from "../../assets/avatars/mutant.png";
+import Penguin from "../../assets/avatars/penguin.png";
+import SiberianHusky from "../../assets/avatars/siberian-husky.png";
+import Sloth from "../../assets/avatars/sloth.png";
+import Werewolf from "../../assets/avatars/werewolf.png";
 import axios from "axios";
 
 axios.defaults.baseURL =
@@ -48,6 +63,13 @@ const Dashboard = () => {
   const [phone, setPhone] = useState("");
   const [isTargetSet, setIsTargetSet] = useState(false);
   const [userId, setUserId] = useState("");
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [userSettings, setUserSettings] = useState({
+    name: "",
+    avatar: "",
+    emailNotifications: true,
+    mobileNotifications: true,
+  });
 
   const motivationalQuotes = [
     "The future belongs to those who believe in the beauty of their dreams. - Eleanor Roosevelt",
@@ -62,6 +84,22 @@ const Dashboard = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const quoteRef = useRef();
 
+  const avatars = [
+    { id: "Astronaut", src: Astronaut },
+    { id: "Bee", src: Bee },
+    { id: "Bat", src: Bat },
+    { id: "Boy", src: Boy },
+    { id: "Donkey", src: Donkey },
+    { id: "Fox", src: Fox },
+    { id: "Girl", src: Girl },
+    { id: "Gorilla", src: Gorilla },
+    { id: "Mutant", src: Mutant },
+    { id: "Penguin", src: Penguin },
+    { id: "SiberianHusky", src: SiberianHusky },
+    { id: "Sloth", src: Sloth },
+    { id: "Werewolf", src: Werewolf },
+  ];
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -75,6 +113,14 @@ const Dashboard = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+        });
+
+        console.log("response: ", response);
+        setUserSettings({
+          name: response?.data?.name,
+          avatar: response?.data?.avatar,
+          emailNotifications: true,
+          mobileNotifications: true,
         });
 
         setUserId(response.data._id);
@@ -95,6 +141,10 @@ const Dashboard = () => {
 
     fetchUserData();
   }, [navigate]);
+
+  const handleOpenSettings = () => {
+    setIsSettingsOpen(true);
+  };
 
   const changeQuote = () => {
     setIsAnimating(true);
@@ -202,10 +252,14 @@ const Dashboard = () => {
       <header className="app-header">
         <h1>MindStreamer</h1>
         <div className="header-actions">
-          <ThemeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
-          <button onClick={() => navigate("/")} className="logout-button">
-            Logout
-          </button>
+          <ProfilePopup
+            darkMode={darkMode}
+            onLogout={() => navigate("/")}
+            onOpenSettings={handleOpenSettings}
+            userAvatar={userSettings?.avatar}
+            userName={userSettings?.name}
+            avatars={avatars}
+          />
         </div>
       </header>
       <div className={`app-container ${darkMode ? "dark-mode" : ""}`}>
@@ -260,6 +314,21 @@ const Dashboard = () => {
         </div>
       </div>
       <SoundPlayer />
+      <SettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        darkMode={darkMode}
+        setDarkMode={setDarkMode}
+        initialName={userSettings.name}
+        initialAvatar={userSettings.avatar}
+        initialEmailNotifications={userSettings.emailNotifications}
+        initialMobileNotifications={userSettings.mobileNotifications}
+        avatars={avatars}
+        onSave={(newSettings) => {
+          setUserSettings(newSettings);
+          setIsSettingsOpen(false);
+        }}
+      />
     </div>
   );
 };

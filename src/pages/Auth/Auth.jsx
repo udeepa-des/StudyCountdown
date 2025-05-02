@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Auth.css";
 import { successToast, errorToast, loadingToast } from "../../utils/toast";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -12,6 +14,7 @@ const Auth = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // New state for password visibility
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -20,6 +23,10 @@ const Auth = () => {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   const handleSubmit = async (e) => {
@@ -95,18 +102,31 @@ const Auth = () => {
             />
           </div>
 
-          <div className="form-group">
+          <div className="form-group password-group">
             <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="auth-input"
-              required
-              minLength="6"
-            />
+            <div className="password-input-container">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className="auth-input"
+                required
+                minLength="6"
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={togglePasswordVisibility}
+              >
+                {showPassword ? (
+                  <FontAwesomeIcon icon={faEye} className="profile-icon" />
+                ) : (
+                  <FontAwesomeIcon icon={faEyeSlash} className="profile-icon" />
+                )}
+              </button>
+            </div>
           </div>
 
           <button type="submit" className="auth-button" disabled={loading}>
