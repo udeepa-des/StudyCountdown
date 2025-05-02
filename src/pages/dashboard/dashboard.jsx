@@ -10,7 +10,7 @@ import ProfilePopup from "../../components/ProfilePopup/ProfilePopup";
 import SettingsModal from "../../components/SettingsModal/SettingsModal";
 import Astronaut from "../../assets/avatars/astronaut.png";
 import Bee from "../../assets/avatars/bee.png";
-import Bat from "../../assets/avatars/Bat.png";
+import Bat from "../../assets/avatars/bat.png";
 import Boy from "../../assets/avatars/boy.png";
 import Donkey from "../../assets/avatars/donkey.png";
 import Fox from "../../assets/avatars/fox.png";
