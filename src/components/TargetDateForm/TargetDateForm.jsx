@@ -2,21 +2,20 @@ import { useState } from "react";
 import "./TargetDateForm.css";
 
 const TargetDateForm = ({
+  handleSetTargetDate,
+  targetName,
+  setTargetName,
+  targetDate,
   setTargetDate,
-  email,
-  setEmail,
-  phone,
-  setPhone,
   setCountdown,
   setIsTargetSet,
 }) => {
-  const [selectedDate, setSelectedDate] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!selectedDate) return;
+    if (!targetDate || !targetName) return;
 
-    setTargetDate(selectedDate, email, phone);
+    handleSetTargetDate(targetDate, targetName);
     setCountdown("Calculating..");
     setIsTargetSet(true);
   };
@@ -25,12 +24,21 @@ const TargetDateForm = ({
     <section className="card">
       <h2>Set Your Target</h2>
       <form onSubmit={handleSubmit} className="form-grid">
+        <input
+          type="text"
+          placeholder="Target name (e.g., Final Exams)"
+          value={targetName}
+          onChange={(e) => setTargetName(e.target.value)}
+          className="form-input"
+          required
+        />
+
         <div className="date-picker-container">
           <input
             id="target-date"
             type="date"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
+            value={targetDate}
+            onChange={(e) => setTargetDate(e.target.value)}
             className="date-picker"
             required
             min={new Date().toISOString().split("T")[0]}
@@ -38,21 +46,6 @@ const TargetDateForm = ({
           />
         </div>
 
-        <input
-          type="email"
-          placeholder="Email for notifications"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="form-input"
-        />
-
-        <input
-          type="tel"
-          placeholder="Phone for SMS"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          className="form-input"
-        />
         <div className="primary-btn-container">
           <button type="submit" className="primary-button">
             Set Target Date

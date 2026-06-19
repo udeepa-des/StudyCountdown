@@ -7,20 +7,20 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
-  margin-top: 1rem;
+  margin-top: 4.5rem;
 }
 
 .countdown-card {
-  background: rgba(var(--card-bg-rgb), 0.7); /* Semi-transparent background */
-  backdrop-filter: blur(16px); /* Frosted blur effect */
-  -webkit-backdrop-filter: blur(16px); /* Safari support */
+  background: rgba(var(--card-bg-rgb), 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-radius: 8px;
   padding: 1.5rem 0.5rem;
   box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border for contrast */
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .countdown-value {
@@ -69,40 +69,90 @@
 /* Responsive design for smaller screens */
 @media (max-width: 768px) {
   .countdown-grid {
-    grid-template-columns: repeat(4, 1fr); /* Keep 4 columns */
-    gap: 0.5rem; /* Reduce gap between items */
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
   }
 
   .countdown-card {
-    padding: 1rem 0.25rem; /* Reduce padding */
+    padding: 1rem 0.25rem;
   }
 
   .countdown-value {
-    font-size: 1.8rem; /* Reduce font size */
+    font-size: 1.8rem;
   }
 
   .countdown-label {
-    font-size: 0.8rem; /* Reduce label size */
+    font-size: 0.8rem;
   }
 }
 
 @media (max-width: 480px) {
   .countdown-grid {
-    grid-template-columns: repeat(4, 1fr); /* Keep 4 columns */
-    gap: 0.25rem; /* Further reduce gap */
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.25rem;
   }
 
   .countdown-card {
-    padding: 0.75rem 0.1rem; /* Further reduce padding */
+    padding: 0.75rem 0.1rem;
   }
 
   .countdown-value {
-    font-size: 1.5rem; /* Further reduce font size */
+    font-size: 1.5rem;
     margin-bottom: 0.25rem;
   }
 
   .countdown-label {
-    font-size: 0.7rem; /* Further reduce label size */
+    font-size: 0.7rem;
     letter-spacing: 0.5px;
   }
 }
+
+.target-name {
+  margin: 0;
+  padding: 0.5rem 0;
+  font-weight: 600;
+  color: var(--primary-color);
+  text-align: center;
+  flex-grow: 1;
+}
+
+.countdown-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.countdown-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.countdown-action-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.countdown-action-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.countdown-action-button.delete:hover {
+  background-color: rgba(255, 0, 0, 0.1);
+}
+
+/* .countdown-action-button.delete svg {
+  color: #ff4444;
+}
+
+.countdown-action-button.edit svg {
+  color: #00fa4b;
+} */
+

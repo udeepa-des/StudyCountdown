@@ -1,18 +1,6 @@
 import StudyPlanItem from "./StudyPlanItem";
 
-const StudyPlanList = ({ plans, setPlans, email, phone }) => {
-  const togglePlanCompletion = async (id) => {
-    const updatedPlans = plans.map((plan) =>
-      plan.id === id ? { ...plan, completed: !plan.completed } : plan
-    );
-    await setPlans(updatedPlans);
-  };
-
-  const deletePlan = async (id) => {
-    const updatedPlans = plans.filter((plan) => plan.id !== id);
-    await setPlans(updatedPlans);
-  };
-
+const StudyPlanList = ({ plans, onToggleComplete, onDelete }) => {
   return (
     <section className="card">
       <h2>Your Study Plans</h2>
@@ -24,10 +12,10 @@ const StudyPlanList = ({ plans, setPlans, email, phone }) => {
         <ul className="plans-list">
           {plans.map((plan) => (
             <StudyPlanItem
-              key={plan.id}
+              key={plan._id}
               plan={plan}
-              onToggleComplete={togglePlanCompletion}
-              onDelete={deletePlan}
+              onToggleComplete={onToggleComplete}
+              onDelete={onDelete}
             />
           ))}
         </ul>

@@ -12,8 +12,10 @@ const SettingsModal = ({
   initialEmailNotifications = true,
   initialMobileNotifications = true,
   setDarkMode,
+  initialBackground = "",
   avatars,
   onSave,
+  backgroundOptions,
 }) => {
   const [name, setName] = useState(initialName);
   const [avatar, setAvatar] = useState(initialAvatar);
@@ -23,6 +25,7 @@ const SettingsModal = ({
   const [mobileNotifications, setMobileNotifications] = useState(
     initialMobileNotifications
   );
+  const [background, setBackground] = useState(initialBackground);
 
   useEffect(() => {
     if (isOpen) {
@@ -30,6 +33,7 @@ const SettingsModal = ({
       setAvatar(initialAvatar);
       setEmailNotifications(initialEmailNotifications);
       setMobileNotifications(initialMobileNotifications);
+      setBackground(initialBackground);
     }
   }, [
     isOpen,
@@ -37,6 +41,7 @@ const SettingsModal = ({
     initialAvatar,
     initialEmailNotifications,
     initialMobileNotifications,
+    initialBackground,
   ]);
 
   useEffect(() => {
@@ -62,6 +67,7 @@ const SettingsModal = ({
           avatar,
           emailNotifications,
           mobileNotifications,
+          background,
         },
         {
           headers: {
@@ -75,6 +81,7 @@ const SettingsModal = ({
         avatar,
         emailNotifications,
         mobileNotifications,
+        background,
       });
       onClose();
     } catch (error) {
@@ -99,7 +106,7 @@ const SettingsModal = ({
 
         <div className="modal-content">
           <form onSubmit={handleSubmit}>
-            <div className="form-group">
+            <div className="form-group-setting-modal">
               <label htmlFor="name">Display Name</label>
               <input
                 id="name"
@@ -110,7 +117,7 @@ const SettingsModal = ({
               />
             </div>
 
-            <div className="form-group">
+            <div className="form-group-setting-modal">
               <label>Avatar</label>
               <div className="avatar-grid">
                 {avatars.map((avatarItem) => (
@@ -131,7 +138,7 @@ const SettingsModal = ({
               </div>
             </div>
 
-            <div className="form-group">
+            <div className="form-group-setting-modal">
               <label>Notifications</label>
               <div className="toggle-group">
                 <div className="toggle-item">
@@ -173,11 +180,39 @@ const SettingsModal = ({
               </div>
             </div>
 
-            <div className="form-group">
+            <div className="form-group-setting-modal">
               <label>Appearance</label>
               <div className="toggle-item">
                 <span>Change Theme</span>
                 <ThemeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
+              </div>
+            </div>
+
+            <div className="form-group-setting-modal">
+              <label>Background</label>
+              <div className="background-grid">
+                {backgroundOptions.map((bg) => (
+                  <div
+                    key={bg.id}
+                    className={`background-option ${
+                      background === bg.id ? "selected" : ""
+                    }`}
+                    onClick={() => setBackground(bg.id)}
+                  >
+                    {bg.src ? (
+                      <img
+                        src={bg.src}
+                        alt={`Background ${bg.name}`}
+                        className="background-img"
+                      />
+                    ) : (
+                      <div className="default-bg">
+                        <span>Default</span>
+                      </div>
+                    )}
+                    <div className="background-name">{bg.name}</div>
+                  </div>
+                ))}
               </div>
             </div>
           </form>

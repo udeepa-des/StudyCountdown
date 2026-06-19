@@ -22,6 +22,11 @@ import SiberianHusky from "../../assets/avatars/siberian-husky.png";
 import Sloth from "../../assets/avatars/sloth.png";
 import Werewolf from "../../assets/avatars/werewolf.png";
 import axios from "axios";
+import Background1 from "../../assets/backgrounds/bg1.png";
+import Background2 from "../../assets/backgrounds/bg2.jpg";
+import Background3 from "../../assets/backgrounds/bg3.jpg";
+import Background4 from "../../assets/backgrounds/bg4.png";
+// import Background5 from "../../assets/backgrounds/bg5.jpg";
 
 axios.defaults.baseURL =
   import.meta.env.VITE_API_URL || "http://localhost:5000";
@@ -57,18 +62,22 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [darkMode, setDarkMode] = useState(false);
   const [targetDate, setTargetDate] = useState("");
+  const [targetName, setTargetName] = useState("");
   const [countdown, setCountdown] = useState("");
   const [plans, setPlans] = useState([]);
   const [email, setEmail] = useState("");
+  const [backgroundImage, setBackgroundImage] = useState("");
   const [phone, setPhone] = useState("");
   const [isTargetSet, setIsTargetSet] = useState(false);
   const [userId, setUserId] = useState("");
+  // const [activeTab, setActiveTab] = useState("countdown");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [userSettings, setUserSettings] = useState({
     name: "",
     avatar: "",
     emailNotifications: true,
     mobileNotifications: true,
+    background: "",
   });
 
   const motivationalQuotes = [
@@ -100,6 +109,15 @@ const Dashboard = () => {
     { id: "Werewolf", src: Werewolf },
   ];
 
+  const backgroundOptions = [
+    { id: "default", name: "Default", src: "" },
+    { id: "bg1", name: "Abstract 1", src: Background1 },
+    { id: "bg2", name: "Abstract 2", src: Background2 },
+    { id: "bg3", name: "Nature", src: Background3 },
+    { id: "bg4", name: "Space", src: Background4 },
+    // { id: "bg5", name: "Gradient", value: Background5 },
+  ];
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -121,17 +139,19 @@ const Dashboard = () => {
           avatar: response?.data?.avatar,
           emailNotifications: true,
           mobileNotifications: true,
+          background: response?.data?.background || "",
         });
-
+        setBackgroundImage(response?.data?.background || "");
         setUserId(response.data._id);
         if (response.data.targetDate) {
           setTargetDate(
             new Date(response.data.targetDate).toISOString().split("T")[0]
           );
+          setTargetName(response.data.targetName);
           setIsTargetSet(true);
         }
         if (response.data.studyPlans) {
-          setPlans(response.data.studyPlans);
+          setPlans(response.data.studyPlans || []);
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -157,22 +177,20 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    const interval = setInterval(changeQuote, 10000); // Change every 10 seconds
+    const interval = setInterval(changeQuote, 10000);
     return () => clearInterval(interval);
   }, [currentQuote]);
 
   useEffect(() => {
     if (!targetDate) return;
 
-    // Update countdown every second
-    const interval = setInterval(() => {
+    const updateCountdown = () => {
       const now = new Date().getTime();
       const target = new Date(targetDate).getTime();
       const distance = target - now;
 
       if (distance < 0) {
-        clearInterval(interval);
-        setCountdown("EXPIRED");
+        handleDeleteCountdown();
         return;
       }
 
@@ -184,18 +202,24 @@ const Dashboard = () => {
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
       setCountdown(`${days}d ${hours}h ${minutes}m ${seconds}s`);
-    }, 1000);
+
+      if (days === 0 && hours === 0 && minutes === 0 && seconds === 0) {
+        handleDeleteCountdown();
+      }
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
 
     return () => clearInterval(interval);
   }, [targetDate]);
 
-  // Update this function to save to the backend
-  const handleSetTargetDate = async (date, userEmail, userPhone) => {
+  const handleSetTargetDate = async (date, name) => {
     try {
       const token = localStorage.getItem("token");
       await axios.put(
         "/api/target-date",
-        { targetDate: date },
+        { targetDate: date, targetName: name },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -204,54 +228,106 @@ const Dashboard = () => {
       );
 
       setTargetDate(date);
-      setEmail(userEmail);
-      setPhone(userPhone);
       setIsTargetSet(true);
+      setTargetName(name);
+      setCountdown("");
     } catch (error) {
       console.error("Error setting target date:", error);
     }
   };
 
-  // Update this to save plans to the backend
-  const handleAddPlan = async (newPlan) => {
+  const handleDeleteCountdown = async () => {
     try {
-      const updatedPlans = [...plans, newPlan];
       const token = localStorage.getItem("token");
-
-      await axios.put("/api/plans", updatedPlans, {
+      await axios.delete("/api/target-date", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      setPlans(updatedPlans);
     } catch (error) {
-      console.error("Error adding plan:", error);
+      console.error("Error deleting target date:", error);
+    }
+
+    setTargetDate("");
+    setTargetName("");
+    setCountdown("");
+    setIsTargetSet(false);
+  };
+
+  const handleAddPlan = async (newPlan) => {
+    try {
+      const response = await axios.post("/api/plans", newPlan);
+      setPlans((prevPlans) => [...prevPlans, response.data]);
+    } catch (error) {
+      console.error(
+        "Error adding plan:",
+        error.response ? error.response.data : error
+      );
     }
   };
 
-  // Update this to save plan changes to the backend
-  const handleUpdatePlans = async (updatedPlans) => {
+  const handleToggleComplete = async (planId) => {
+    const plan = plans.find((p) => p._id === planId);
+    if (!plan) return;
     try {
-      const token = localStorage.getItem("token");
-
-      await axios.put("/api/plans", updatedPlans, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await axios.put(`/api/plans/${planId}`, {
+        completed: !plan.completed,
       });
-
-      setPlans(updatedPlans);
+      setPlans((prevPlans) =>
+        prevPlans.map((p) => (p._id === planId ? response.data : p))
+      );
     } catch (error) {
-      console.error("Error updating plans:", error);
+      console.error("Error toggling plan:", error);
+    }
+  };
+
+  const handleDeletePlan = async (planId) => {
+    try {
+      await axios.delete(`/api/plans/${planId}`);
+      setPlans((prevPlans) => prevPlans.filter((p) => p._id !== planId));
+    } catch (error) {
+      console.error("Error deleting plan:", error);
     }
   };
 
   return (
-    <div className="whole-page">
+    <div
+      className={`whole-page ${darkMode ? "dark-mode" : ""}`}
+      style={
+        userSettings.background
+          ? {
+              backgroundImage: `url(${
+                backgroundOptions.find(
+                  (bg) => bg.id === userSettings.background
+                )?.src
+              })`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundAttachment: "fixed",
+            }
+          : {}
+      }
+    >
       <header className="app-header">
         <h1>MindStreamer</h1>
+
         <div className="header-actions">
+          {/* <div className="tabs-container">
+            <button
+              className={`tab-button ${
+                activeTab === "countdown" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("countdown")}
+            >
+              Countdown
+            </button>
+            <button
+              className={`tab-button ${activeTab === "plans" ? "active" : ""}`}
+              onClick={() => setActiveTab("plans")}
+            >
+              Study Plans
+            </button>
+          </div> */}
           <ProfilePopup
             darkMode={darkMode}
             onLogout={() => navigate("/")}
@@ -275,41 +351,57 @@ const Dashboard = () => {
           </div>
 
           <div className="cards-container">
-            {!isTargetSet && (
-              <section className="card target-date-card">
-                <TargetDateForm
-                  setTargetDate={handleSetTargetDate}
-                  email={email}
-                  setEmail={setEmail}
-                  phone={phone}
-                  setPhone={setPhone}
-                  setCountdown={setCountdown}
-                  setIsTargetSet={setIsTargetSet}
-                />
+            {/* {activeTab === "countdown" && ( */}
+            <div className="full-width-card">
+              <div
+                className={`${
+                  isTargetSet ? "target-date-card" : "target-form-card"
+                } `}
+              >
+                {!isTargetSet && (
+                  // <section className="card target-date-card">
+                  <TargetDateForm
+                    targetName={targetName}
+                    setTargetName={setTargetName}
+                    targetDate={targetDate}
+                    setTargetDate={setTargetDate}
+                    handleSetTargetDate={handleSetTargetDate}
+                    setCountdown={setCountdown}
+                    setIsTargetSet={setIsTargetSet}
+                  />
+                  // </section>
+                )}
+
+                {countdown && isTargetSet && (
+                  // <section className="card countdown-card-bg">
+                  <CountdownTimer
+                    countdown={countdown}
+                    setIsTargetSet={setIsTargetSet}
+                    targetName={targetName}
+                    onDelete={handleDeleteCountdown}
+                  />
+                  // </section>
+                )}
+              </div>
+            </div>
+
+            {/* )} */}
+
+            {/* {activeTab === "plans" && ( */}
+            <>
+              <section>
+                <StudyPlanForm onAddPlan={handleAddPlan} />
               </section>
-            )}
 
-            {countdown && isTargetSet && (
-              <section className="card countdown-card-bg">
-                <CountdownTimer
-                  countdown={countdown}
-                  setIsTargetSet={setIsTargetSet}
+              {/* <section> */}
+                <StudyPlanList
+                  plans={plans}
+                  onToggleComplete={handleToggleComplete}
+                  onDelete={handleDeletePlan}
                 />
-              </section>
-            )}
-
-            <section className="card study-plan-form-card">
-              <StudyPlanForm plans={plans} setPlans={handleAddPlan} />
-            </section>
-
-            <section className="card study-plan-list-card full-width-card">
-              <StudyPlanList
-                plans={plans}
-                setPlans={handleUpdatePlans}
-                email={email}
-                phone={phone}
-              />
-            </section>
+              {/* </section> */}
+            </>
+            {/* )} */}
           </div>
         </div>
       </div>
@@ -321,12 +413,21 @@ const Dashboard = () => {
         setDarkMode={setDarkMode}
         initialName={userSettings.name}
         initialAvatar={userSettings.avatar}
+        initialBackground={userSettings.background}
         initialEmailNotifications={userSettings.emailNotifications}
         initialMobileNotifications={userSettings.mobileNotifications}
         avatars={avatars}
+        backgroundOptions={backgroundOptions}
         onSave={(newSettings) => {
+          console.log("newSettings: ", newSettings);
           setUserSettings(newSettings);
           setIsSettingsOpen(false);
+          if (newSettings.background !== userSettings.background) {
+            const selectedBg = backgroundOptions.find(
+              (bg) => bg.id === newSettings.background
+            );
+            setBackgroundImage(selectedBg ? selectedBg.src : "");
+          }
         }}
       />
     </div>

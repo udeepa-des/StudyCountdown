@@ -1,0 +1,74 @@
+.header-title {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.study-plan-form {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-group {
+  margin-bottom: 0.5rem;
+}
+
+.form-group.full-width {
+  grid-column: span 2;
+}
+
+.form-submit.full-width {
+  grid-column: span 2;
+  text-align: right;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.25rem;
+  /* font-weight: 500; */
+  font-size: 12px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.form-input.error {
+  border-color: #ff4444;
+}
+
+.error-message {
+  color: #ff4444;
+  font-size: 0.8rem;
+  display: block;
+  margin-top: 0.25rem;
+}
+
+textarea.form-input {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.study-plan-label {
+  font-size: 16px;
+}
+
+@media (max-width: 600px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-group.full-width,
+  .form-submit.full-width {
+    grid-column: span 1;
+  }
+}

@@ -92,11 +92,11 @@
   background-color: var(--dark-card-bg);
 }
 
-.form-group {
+.form-group-setting-modal {
   margin-bottom: 2rem;
 }
 
-.form-group label {
+.form-group-setting-modal-setting-modal label {
   display: block;
   margin-bottom: 0.75rem;
   font-size: 20px;
@@ -104,7 +104,7 @@
   color: var(--text-color);
 }
 
-.dark-mode .form-group label {
+.dark-mode .form-group-setting-modal label {
   color: var(--dark-text);
 }
 
@@ -248,18 +248,16 @@
   }
 
   .modal-content {
-    max-height: calc(90vh - 180px); /* Adjust for smaller screens */
+    max-height: calc(90vh - 180px);
   }
 }
 
 @media (max-width: 400px) {
   .avatar-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 
   .modal-header {
-    flex-direction: column;
-    align-items: flex-start;
     gap: 0.5rem;
   }
 
@@ -355,5 +353,63 @@ input:focus + .modern-slider {
 }
 
 .dark-mode .toggle-description {
+  color: var(--dark-text-light);
+}
+
+/*---------------------------------------------*/
+
+/* Background Selection Styles */
+.background-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.background-option {
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.background-option:hover {
+  transform: translateY(-3px);
+}
+
+.background-img,
+.default-bg {
+  width: 100%;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid transparent;
+}
+
+.background-option.selected .background-img,
+.background-option.selected .default-bg {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-color);
+}
+
+.default-bg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.dark-mode .default-bg {
+  background-color: var(--dark-bg);
+  color: var(--dark-text);
+}
+
+.background-name {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+.dark-mode .background-name {
   color: var(--dark-text-light);
 }
