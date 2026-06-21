@@ -1,3 +1,18 @@
+.target-card {
+  width: 100%;
+  background-color: rgba(var(--card-bg-rgb), 0.9);
+  border-radius: 50px;
+  padding: 2.5rem;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.target-card h2 {
+  margin-bottom: 40px;
+}
+
 /* Date Picker Container */
 .date-picker-container {
   position: relative;
@@ -8,7 +23,7 @@
 /* Date Input Styling */
 .date-picker {
   width: 100%;
-  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  padding: 0.75rem 1rem;
   border: 1px solid var(--border-color);
   border-radius: 8px;
   background-color: var(--card-bg);
@@ -16,7 +31,6 @@
   font-family: inherit;
   font-size: 1rem;
   transition: all 0.2s ease;
-  appearance: none;
   cursor: pointer;
 }
 
@@ -26,26 +40,95 @@
   box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
 }
 
-/* Calendar Icon */
-/* .date-picker-container::before {
-  content: "📅";
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  font-size: 1.1rem;
-} */
+.calendar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+}
 
-/* Custom dropdown arrow */
-.date-picker::-webkit-calendar-picker-indicator {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
+.calendar-modal {
+  position: fixed;
+  width: 280px;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 1rem;
+  z-index: 1000;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.calendar-nav {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
   cursor: pointer;
+  color: var(--text-color);
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+}
+
+.calendar-nav:hover {
+  background-color: rgba(67, 97, 238, 0.1);
+}
+
+.calendar-month-label {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-light);
+  margin-bottom: 0.5rem;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: var(--text-color);
+}
+
+.calendar-day.empty {
+  cursor: default;
+}
+
+.calendar-day:not(.empty):not(.disabled):hover {
+  background-color: rgba(67, 97, 238, 0.15);
+}
+
+.calendar-day.selected {
+  background-color: var(--primary-color);
+  color: #fff;
+}
+
+.calendar-day.disabled {
+  color: var(--text-light);
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 /* For Firefox */

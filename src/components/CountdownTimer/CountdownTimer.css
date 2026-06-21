@@ -1,22 +1,22 @@
 .countdown-container {
   text-align: center;
-  padding: 1rem;
+  padding: 0 1rem;
 }
 
 .countdown-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
-  margin-top: 4.5rem;
+  margin-top: 20px;
 }
 
 .countdown-card {
   background: rgba(var(--card-bg-rgb), 0.7);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-radius: 8px;
+  border-radius: 999px;
   padding: 1.5rem 0.5rem;
-  box-shadow: var(--shadow);
+  box-shadow: inset 1px 2px 9px 4px rgba(0,0,0,0.24);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -108,12 +108,14 @@
 }
 
 .target-name {
-  margin: 0;
-  padding: 0.5rem 0;
-  font-weight: 600;
+  /* margin: 0;
+  padding: 0.5rem 0; */
+  font-weight: 700;
   color: var(--primary-color);
-  text-align: center;
-  flex-grow: 1;
+  /* text-align: center;
+  flex-grow: 1; */
+  /* font-size: 35px; */
+  text-transform: uppercase;
 }
 
 .countdown-header {
@@ -129,7 +131,7 @@
 }
 
 .countdown-action-button {
-  background: none;
+  background: rgba(var(--primary-color), 1);
   border: none;
   cursor: pointer;
   padding: 4px;
@@ -137,16 +139,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: rgba(var(--text-light), 0.5);
 }
 
 .countdown-action-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  margin-bottom: 5px;
 }
 
-.countdown-action-button.delete:hover {
-  background-color: rgba(255, 0, 0, 0.1);
-}
+/* .countdown-action-button.delete:hover {
+  margin-bottom: 10px;
+} */
 
 /* .countdown-action-button.delete svg {
   color: #ff4444;

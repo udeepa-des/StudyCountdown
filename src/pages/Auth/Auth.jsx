@@ -273,7 +273,7 @@ const Auth = () => {
           {!isLogin && (
             <>
               <div className="form-group-auth">
-                <label htmlFor="name">Full Name*</label>
+                <label htmlFor="name">Full Name <span className="required">*</span></label>
                 <input
                   type="text"
                   id="name"
@@ -286,7 +286,7 @@ const Auth = () => {
               </div>
 
               <div className="form-group-auth">
-                <label htmlFor="phone">Phone Number*</label>
+                <label htmlFor="phone">Phone Number <span className="required">*</span></label>
                 <input
                   type="tel"
                   id="phone"
@@ -301,7 +301,7 @@ const Auth = () => {
           )}
 
           <div className="form-group-auth">
-            <label htmlFor="email">Email*</label>
+            <label htmlFor="email">Email {!isLogin ? (<span className="required">*</span>) : ""}</label>
             <input
               type="email"
               id="email"
@@ -314,7 +314,7 @@ const Auth = () => {
           </div>
 
           <div className="form-group-auth password-group">
-            <label htmlFor="password">Password*</label>
+            <label htmlFor="password">Password {!isLogin ? (<span className="required">*</span>) : ""}</label>
             <div className="password-input-container">
               <input
                 type={showPassword ? "text" : "password"}
@@ -342,7 +342,7 @@ const Auth = () => {
 
           {!isLogin && (
             <div className="form-group-auth password-group">
-              <label htmlFor="confirmPassword">Confirm Password*</label>
+              <label htmlFor="confirmPassword">Confirm Password <span className="required">*</span></label>
               <div className="password-input-container">
                 <input
                   type={showConfirmPassword ? "text" : "password"}

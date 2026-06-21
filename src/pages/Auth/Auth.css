@@ -24,24 +24,31 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.required {
+  color: red;
+}
+
 .auth-card h2 {
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 40px;
   color: var(--primary-color);
+  font-size: 35px;
 }
 
 .auth-form {
   display: flex;
   flex-direction: column;
+  gap: 12px;
 }
 
 .form-group-auth {
   display: flex;
   flex-direction: column;
+  /* gap: 4px; */
 }
 
-.form-group-auth-auth label {
-  font-size: 0.9rem;
+.form-group-auth label {
+  font-size: 15px;
   color: var(--text-light);
 }
 
@@ -71,12 +78,18 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  margin-top: 0.5rem;
+  margin-top: 20px;
 }
 
 .auth-button:hover {
   background-color: var(--secondary-color);
   transform: translateY(-1px);
+}
+
+.auth-button:disabled {
+  /* background-color: #f0f0f0; */
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 .auth-footer {
@@ -147,9 +160,9 @@
 }
 
 /* Add to your existing Auth.css */
-.password-group {
+/* .password-group {
   margin-bottom: 1rem;
-}
+} */
 
 .password-input-container {
   position: relative;
@@ -191,7 +204,7 @@
 .guest-login-button {
   width: 100%;
   padding: 12px;
-  margin-top: 15px;
+  /* margin-top: 15px; */
   background-color: #f0f0f0;
   color: #333;
   border: 1px solid #ddd;

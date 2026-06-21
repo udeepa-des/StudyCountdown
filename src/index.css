@@ -7,7 +7,7 @@
   --success-color: #4cc9f0;
   --text-color: #2b2d42;
   --text-light: #8d99ae;
-  --bg-color: #f8f9fa;
+  --bg-color: #EBE8E2;
   --card-bg: #ffffff;
   --border-color: #e9ecef;
   --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -15,6 +15,7 @@
   --primary-color-rgb: 67, 97, 238;
   --card-bg-rgb: 255, 255, 255;
   --bg-color-rgb: 248, 249, 250;
+  --bar-shadow: rgba(17, 17, 26, 0.05) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
 
   /* Dark Theme */
   --dark-primary: #3a86ff;
@@ -190,6 +191,7 @@ select {
   background: rgba(var(--card-bg), 0.95);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  box-shadow: var(--bar-shadow);
 }
 
 .app-header h1 {
@@ -233,8 +235,8 @@ select {
 .target-form-card {
   grid-column: 1 / -1; /* Spans all columns */
   justify-self: center; /* Horizontally centers the card */
-  width: 50%; /* Control the card's width (adjust as needed) */
-  max-width: 1200px; /* Optional: prevents card from getting too wide */
+  width: 100%; /* Control the card's width (adjust as needed) */
+  border-radius: 50px;
 }
 
 .card:hover {
@@ -559,9 +561,10 @@ select {
   background: rgba(var(--card-bg-rgb), 0.7);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-radius: 8px;
+  border-radius: 50px;
   padding: 1.5rem 0.5rem;
   box-shadow: var(--shadow);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .countdown-card-bg {

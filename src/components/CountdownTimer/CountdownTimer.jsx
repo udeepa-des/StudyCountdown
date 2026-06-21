@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import "./CountdownTimer.css";
 
-const CountdownTimer = ({ countdown, setIsTargetSet, onDelete, targetName }) => {
+const CountdownTimer = ({
+  countdown,
+  setIsTargetSet,
+  onDelete,
+  targetName,
+}) => {
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
@@ -44,8 +49,11 @@ const CountdownTimer = ({ countdown, setIsTargetSet, onDelete, targetName }) => 
   return (
     <section className="countdown-container">
       <div className="countdown-header">
-        <h2 className="target-name">
-          {targetName ? `Countdown to ${targetName}` : "Countdown to Target"}
+        <h2 className="header-title countdown-title">
+          Countdown to&nbsp;
+          <span className="target-name">
+            {targetName ? targetName : "Target"}
+          </span>
         </h2>
         <div className="countdown-actions">
           <button
