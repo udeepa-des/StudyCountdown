@@ -7,7 +7,7 @@
   --success-color: #4cc9f0;
   --text-color: #2b2d42;
   --text-light: #8d99ae;
-  --bg-color: #EBE8E2;
+  --bg-color: #ebe8e2;
   --card-bg: #ffffff;
   --border-color: #e9ecef;
   --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -15,7 +15,8 @@
   --primary-color-rgb: 67, 97, 238;
   --card-bg-rgb: 255, 255, 255;
   --bg-color-rgb: 248, 249, 250;
-  --bar-shadow: rgba(17, 17, 26, 0.05) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
+  --bar-shadow:
+    rgba(17, 17, 26, 0.05) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
 
   /* Dark Theme */
   --dark-primary: #3a86ff;
@@ -33,15 +34,18 @@
   --dark-bg-rgb: 18, 18, 18;
 
   --shadow-color: 0deg 0% 0%;
-  --shadow-elevation-low: -1px -0.2px 1.1px hsl(var(--shadow-color) / 0.37),
+  --shadow-elevation-low:
+    -1px -0.2px 1.1px hsl(var(--shadow-color) / 0.37),
     -1.7px -0.3px 1.9px -1.2px hsl(var(--shadow-color) / 0.37),
     -4.2px -0.8px 4.8px -2.5px hsl(var(--shadow-color) / 0.37);
-  --shadow-elevation-medium: -1px -0.2px 1.1px hsl(var(--shadow-color) / 0.31),
+  --shadow-elevation-medium:
+    -1px -0.2px 1.1px hsl(var(--shadow-color) / 0.31),
     -2.7px -0.5px 3.1px -0.6px hsl(var(--shadow-color) / 0.31),
     -5.3px -1px 6.1px -1.2px hsl(var(--shadow-color) / 0.31),
     -10.7px -2.1px 12.3px -1.9px hsl(var(--shadow-color) / 0.31),
     -20.8px -4px 23.8px -2.5px hsl(var(--shadow-color) / 0.31);
-  --shadow-elevation-high: -1px -0.2px 1.1px hsl(var(--shadow-color) / 0.29),
+  --shadow-elevation-high:
+    -1px -0.2px 1.1px hsl(var(--shadow-color) / 0.29),
     -5.1px -1px 5.8px -0.3px hsl(var(--shadow-color) / 0.29),
     -9.1px -1.8px 10.4px -0.6px hsl(var(--shadow-color) / 0.29),
     -13.9px -2.7px 15.9px -0.8px hsl(var(--shadow-color) / 0.29),
@@ -73,7 +77,9 @@ body {
   line-height: 1.6;
   color: var(--text-color);
   background-color: var(--bg-color);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 body.dark-mode {
@@ -219,7 +225,9 @@ select {
   padding: 1.5rem;
   box-shadow: var(--shadow);
   margin-bottom: 1.5rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px); /* For Safari */
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -267,7 +275,7 @@ select {
   border-radius: 8px;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  background-color: rgba(var(--card-bg-rgb), 0.6);
+  /* background-color: rgba(var(--card-bg-rgb), 0.6); */
   color: var(--text-color);
   width: 100%;
 }
@@ -291,6 +299,7 @@ select {
   border-radius: 8px;
   font-weight: 500;
   transition: all 0.2s ease;
+  font-size: 15px;
 }
 
 .primary-button:hover {
@@ -484,6 +493,19 @@ select {
     width: 100%;
     justify-content: flex-end;
   }
+
+  .primary-button {
+    width: 100%;
+  }
+
+  .study-plan-label {
+    text-align: center;
+  }
+
+  h2 {
+    text-align: center;
+  }
+
 }
 
 /* Animation for countdown */
@@ -711,4 +733,3 @@ select {
   animation: rollIn 0.5s forwards;
 }
 */
-

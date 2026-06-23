@@ -6,7 +6,7 @@ const StudyPlanList = ({ plans, onToggleComplete, onDelete }) => {
       <h2>Your Study Plans</h2>
       {plans.length === 0 ? (
         <p className="empty-state">
-          No plans yet. Add your first study plan above.
+          No plans yet. Add your first study plan to show here.
         </p>
       ) : (
         <ul className="plans-list">

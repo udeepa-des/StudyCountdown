@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./StudyPlanForm.css";
+import CalendarPicker from "../CalenderPicker/Calendarpicker";
 
 const StudyPlanForm = ({ onAddPlan }) => {
   const [formData, setFormData] = useState({
@@ -20,6 +21,11 @@ const StudyPlanForm = ({ onAddPlan }) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
+  };
+
+  const handleDateChange = (field) => (value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
   const validateForm = () => {
@@ -46,15 +52,11 @@ const StudyPlanForm = ({ onAddPlan }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     if (!validateForm()) return;
 
     const planData = { ...formData };
-
     for (const key in planData) {
-      if (planData[key] === "") {
-        planData[key] = null;
-      }
+      if (planData[key] === "") planData[key] = null;
     }
 
     const finalPlan = {
@@ -84,12 +86,14 @@ const StudyPlanForm = ({ onAddPlan }) => {
 
   return (
     <section className="study-plan-form card">
-      <div className="header-title">
+      {/* <div className="header-title"> */}
         <h2>Create Detailed Study Plan</h2>
-      </div>
+      {/* </div> */}
       <form onSubmit={handleSubmit} className="form-grid">
         <div className="form-group">
-          <label className="study-plan-label" htmlFor="subject">Subject *</label>
+          <label className="study-plan-label" htmlFor="subject">
+            Subject *
+          </label>
           <input
             type="text"
             id="subject"
@@ -104,8 +108,11 @@ const StudyPlanForm = ({ onAddPlan }) => {
             <span className="error-message">{errors.subject}</span>
           )}
         </div>
+
         <div className="form-group">
-          <label className="study-plan-label" htmlFor="topic">Specific Topic</label>
+          <label className="study-plan-label" htmlFor="topic">
+            Specific Topic
+          </label>
           <input
             type="text"
             id="topic"
@@ -116,9 +123,11 @@ const StudyPlanForm = ({ onAddPlan }) => {
             className="form-input"
           />
         </div>
-        {/* Row 2 */}
+
         <div className="form-group">
-          <label className="study-plan-label" htmlFor="hours">Total Hours *</label>
+          <label className="study-plan-label" htmlFor="hours">
+            Total Hours *
+          </label>
           <input
             type="number"
             id="hours"
@@ -135,8 +144,11 @@ const StudyPlanForm = ({ onAddPlan }) => {
             <span className="error-message">{errors.hours}</span>
           )}
         </div>
+
         <div className="form-group">
-          <label className="study-plan-label" htmlFor="daysPerWeek">Days/Week</label>
+          <label className="study-plan-label" htmlFor="daysPerWeek">
+            Days/Week
+          </label>
           <input
             type="number"
             id="daysPerWeek"
@@ -152,35 +164,41 @@ const StudyPlanForm = ({ onAddPlan }) => {
             <span className="error-message">{errors.daysPerWeek}</span>
           )}
         </div>
-        {/* Row 3 */}
+
         <div className="form-group">
-          <label className="study-plan-label" htmlFor="startDate">Start Date</label>
-          <input
-            type="date"
+          <label className="study-plan-label" htmlFor="startDate">
+            Start Date
+          </label>
+          <CalendarPicker
             id="startDate"
-            name="startDate"
             value={formData.startDate}
-            onChange={handleChange}
-            className="form-input"
+            onChange={handleDateChange("startDate")}
+            placeholder="Select start date"
+            className={errors.startDate ? "error" : ""}
           />
         </div>
+
         <div className="form-group">
-          <label className="study-plan-label" htmlFor="endDate">Target Completion</label>
-          <input
-            type="date"
+          <label className="study-plan-label" htmlFor="endDate">
+            Target Completion
+          </label>
+          <CalendarPicker
             id="endDate"
-            name="endDate"
             value={formData.endDate}
-            onChange={handleChange}
-            className={`form-input ${errors.endDate ? "error" : ""}`}
+            onChange={handleDateChange("endDate")}
+            placeholder="Select end date"
+            minDate={formData.startDate || undefined}
+            className={errors.endDate ? "error" : ""}
           />
           {errors.endDate && (
             <span className="error-message">{errors.endDate}</span>
           )}
         </div>
-        {/* Row 4 */}
+
         <div className="form-group">
-          <label className="study-plan-label" htmlFor="priority">Priority</label>
+          <label className="study-plan-label" htmlFor="priority">
+            Priority
+          </label>
           <select
             id="priority"
             name="priority"
@@ -193,8 +211,11 @@ const StudyPlanForm = ({ onAddPlan }) => {
             <option value="high">High</option>
           </select>
         </div>
+
         <div className="form-group">
-          <label className="study-plan-label" htmlFor="milestone">Milestone</label>
+          <label className="study-plan-label" htmlFor="milestone">
+            Milestone
+          </label>
           <input
             type="text"
             id="milestone"
@@ -205,9 +226,11 @@ const StudyPlanForm = ({ onAddPlan }) => {
             className="form-input"
           />
         </div>
-        {/* Row 5 */}
+
         <div className="form-group full-width">
-          <label className="study-plan-label" htmlFor="resources">Resources (comma separated)</label>
+          <label className="study-plan-label" htmlFor="resources">
+            Resources (comma separated)
+          </label>
           <input
             type="text"
             id="resources"
@@ -218,9 +241,11 @@ const StudyPlanForm = ({ onAddPlan }) => {
             className="form-input"
           />
         </div>
-        {/* Row 6 */}
+
         <div className="form-group full-width">
-          <label className="study-plan-label" htmlFor="notes">Additional Notes</label>
+          <label className="study-plan-label" htmlFor="notes">
+            Additional Notes
+          </label>
           <textarea
             id="notes"
             name="notes"
@@ -231,6 +256,7 @@ const StudyPlanForm = ({ onAddPlan }) => {
             rows="3"
           />
         </div>
+
         <div className="form-submit full-width">
           <button type="submit" className="primary-button">
             Create Study Plan

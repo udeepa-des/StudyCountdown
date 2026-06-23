@@ -26,6 +26,10 @@ import Background1 from "../../assets/backgrounds/bg1.png";
 import Background2 from "../../assets/backgrounds/bg2.jpg";
 import Background3 from "../../assets/backgrounds/bg3.jpg";
 import Background4 from "../../assets/backgrounds/bg4.png";
+import SplashScreen from "../../components/SplashScreen/SplashScreen";
+import ConfirmationPopup from "../../components/ConfirmationPopup/ConfirmationPopup";
+import { getDateAtMidnight } from "../../utils/getDateAtMidnight";
+import toast from "react-hot-toast";
 // import Background5 from "../../assets/backgrounds/bg5.jpg";
 
 axios.defaults.baseURL =
@@ -42,7 +46,7 @@ axios.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Add a response interceptor to handle errors
@@ -55,7 +59,7 @@ axios.interceptors.response.use(
       window.location.href = "/login";
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 const Dashboard = () => {
@@ -70,6 +74,7 @@ const Dashboard = () => {
   const [phone, setPhone] = useState("");
   const [isTargetSet, setIsTargetSet] = useState(false);
   const [userId, setUserId] = useState("");
+  const [pageLoading, setPageLoading] = useState(true);
   // const [activeTab, setActiveTab] = useState("countdown");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [userSettings, setUserSettings] = useState({
@@ -79,6 +84,9 @@ const Dashboard = () => {
     mobileNotifications: true,
     background: "",
   });
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   const motivationalQuotes = [
     "The future belongs to those who believe in the beauty of their dreams. - Eleanor Roosevelt",
@@ -120,6 +128,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
+      setPageLoading(true);
       try {
         const token = localStorage.getItem("token");
         if (!token) {
@@ -145,7 +154,7 @@ const Dashboard = () => {
         setUserId(response.data._id);
         if (response.data.targetDate) {
           setTargetDate(
-            new Date(response.data.targetDate).toISOString().split("T")[0]
+            new Date(response.data.targetDate).toISOString().split("T")[0],
           );
           setTargetName(response.data.targetName);
           setIsTargetSet(true);
@@ -156,6 +165,10 @@ const Dashboard = () => {
       } catch (error) {
         console.error("Error fetching user data:", error);
         navigate("/");
+      } finally {
+        setTimeout(() => {
+          setPageLoading(false);
+        }, 1500);
       }
     };
 
@@ -186,7 +199,7 @@ const Dashboard = () => {
 
     const updateCountdown = () => {
       const now = new Date().getTime();
-      const target = new Date(targetDate).getTime();
+      const target = getDateAtMidnight(targetDate).getTime();
       const distance = target - now;
 
       if (distance < 0) {
@@ -196,7 +209,7 @@ const Dashboard = () => {
 
       const days = Math.floor(distance / (1000 * 60 * 60 * 24));
       const hours = Math.floor(
-        (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
       );
       const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
@@ -217,6 +230,30 @@ const Dashboard = () => {
   const handleSetTargetDate = async (date, name) => {
     try {
       const token = localStorage.getItem("token");
+      await axios.post(
+        "/api/target-date",
+        { targetDate: date, targetName: name },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+    } catch (error) {
+      console.error("Error setting target date:", error);
+      toast.error("Something went wrong when setting target");
+    } finally {
+      toast.success("Successfully added the target");
+      setTargetDate(date);
+      setIsTargetSet(true);
+      setTargetName(name);
+      setCountdown("");
+    }
+  };
+
+  const handleUpdateTargetDate = async (date, name) => {
+    try {
+      const token = localStorage.getItem("token");
       await axios.put(
         "/api/target-date",
         { targetDate: date, targetName: name },
@@ -224,19 +261,27 @@ const Dashboard = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
-
+    } catch (error) {
+      console.error("Error setting target date:", error);
+      toast.error("Something went wrong when setting target");
+    } finally {
+      toast.success("Successfully updated the target");
       setTargetDate(date);
       setIsTargetSet(true);
       setTargetName(name);
       setCountdown("");
-    } catch (error) {
-      console.error("Error setting target date:", error);
+      setIsEditing(false);
     }
   };
 
+  const handleDeleteClick = () => {
+    setShowDeleteDialog(true);
+  };
+
   const handleDeleteCountdown = async () => {
+    setIsDeleting(true);
     try {
       const token = localStorage.getItem("token");
       await axios.delete("/api/target-date", {
@@ -244,14 +289,23 @@ const Dashboard = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+      setIsDeleting(false);
+      setShowDeleteDialog(false);
+      toast.success("Successfully deleted the target");
     } catch (error) {
       console.error("Error deleting target date:", error);
+      setIsDeleting(false);
+      toast.error("Something went wrong when deleting target");
     }
 
     setTargetDate("");
     setTargetName("");
     setCountdown("");
     setIsTargetSet(false);
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteDialog(false);
   };
 
   const handleAddPlan = async (newPlan) => {
@@ -261,7 +315,7 @@ const Dashboard = () => {
     } catch (error) {
       console.error(
         "Error adding plan:",
-        error.response ? error.response.data : error
+        error.response ? error.response.data : error,
       );
     }
   };
@@ -274,7 +328,7 @@ const Dashboard = () => {
         completed: !plan.completed,
       });
       setPlans((prevPlans) =>
-        prevPlans.map((p) => (p._id === planId ? response.data : p))
+        prevPlans.map((p) => (p._id === planId ? response.data : p)),
       );
     } catch (error) {
       console.error("Error toggling plan:", error);
@@ -290,6 +344,10 @@ const Dashboard = () => {
     }
   };
 
+  if (pageLoading) {
+    return <SplashScreen />;
+  }
+
   return (
     <div
       className={`whole-page ${darkMode ? "dark-mode" : ""}`}
@@ -298,7 +356,7 @@ const Dashboard = () => {
           ? {
               backgroundImage: `url(${
                 backgroundOptions.find(
-                  (bg) => bg.id === userSettings.background
+                  (bg) => bg.id === userSettings.background,
                 )?.src
               })`,
               backgroundSize: "cover",
@@ -366,8 +424,10 @@ const Dashboard = () => {
                     targetDate={targetDate}
                     setTargetDate={setTargetDate}
                     handleSetTargetDate={handleSetTargetDate}
+                    handleUpdateTargetDate={handleUpdateTargetDate}
                     setCountdown={setCountdown}
                     setIsTargetSet={setIsTargetSet}
+                    isEditing={isEditing}
                   />
                   // </section>
                 )}
@@ -378,7 +438,8 @@ const Dashboard = () => {
                     countdown={countdown}
                     setIsTargetSet={setIsTargetSet}
                     targetName={targetName}
-                    onDelete={handleDeleteCountdown}
+                    onDelete={handleDeleteClick}
+                    setIsEditing={setIsEditing}
                   />
                   // </section>
                 )}
@@ -394,11 +455,11 @@ const Dashboard = () => {
               </section>
 
               {/* <section> */}
-                <StudyPlanList
-                  plans={plans}
-                  onToggleComplete={handleToggleComplete}
-                  onDelete={handleDeletePlan}
-                />
+              <StudyPlanList
+                plans={plans}
+                onToggleComplete={handleToggleComplete}
+                onDelete={handleDeletePlan}
+              />
               {/* </section> */}
             </>
             {/* )} */}
@@ -424,11 +485,23 @@ const Dashboard = () => {
           setIsSettingsOpen(false);
           if (newSettings.background !== userSettings.background) {
             const selectedBg = backgroundOptions.find(
-              (bg) => bg.id === newSettings.background
+              (bg) => bg.id === newSettings.background,
             );
             setBackgroundImage(selectedBg ? selectedBg.src : "");
           }
         }}
+      />
+
+      <ConfirmationPopup
+        isOpen={showDeleteDialog}
+        message="Are you sure you want to delete this countdown?"
+        onConfirm={handleDeleteCountdown}
+        onCancel={handleCancelDelete}
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        confirmVariant="danger"
+        loading={isDeleting}
+        loadingLabel="Deleting..."
       />
     </div>
   );

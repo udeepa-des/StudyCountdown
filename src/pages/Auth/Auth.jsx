@@ -4,7 +4,6 @@ import "./Auth.css";
 import { successToast, errorToast, loadingToast } from "../../utils/toast";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import SplashScreen from "../../components/SplashScreen/SplashScreen";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -23,7 +22,6 @@ const Auth = () => {
   const [resetCode, setResetCode] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showSplash, setShowSplash] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -60,12 +58,7 @@ const Auth = () => {
       const { user, token } = await response.json();
       successToast("Logged in as guest");
       localStorage.setItem("token", token);
-
-      setShowSplash(true);
-
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 2500);
+      navigate("/dashboard");
     } catch (err) {
       errorToast(err.message);
     } finally {
@@ -181,15 +174,10 @@ const Auth = () => {
 
       const { user, token } = await response.json();
       successToast(
-        isLogin ? "Successfully logged in!" : "Account created successfully!",
+        isLogin ? "Successfully logged in!" : "Account created successfully!"
       );
       localStorage.setItem("token", token);
-
-      setShowSplash(true);
-
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 2500);
+      navigate("/dashboard");
     } catch (err) {
       console.error("Auth error:", err);
       setError(err.message || "Something went wrong. Please try again.");
@@ -274,10 +262,6 @@ const Auth = () => {
     );
   }
 
-  if (showSplash) {
-    return <SplashScreen />;
-  }
-
   return (
     <div className="auth-container">
       <div className="auth-card">
@@ -289,9 +273,7 @@ const Auth = () => {
           {!isLogin && (
             <>
               <div className="form-group-auth">
-                <label htmlFor="name">
-                  Full Name <span className="required">*</span>
-                </label>
+                <label htmlFor="name">Full Name <span className="required">*</span></label>
                 <input
                   type="text"
                   id="name"
@@ -304,9 +286,7 @@ const Auth = () => {
               </div>
 
               <div className="form-group-auth">
-                <label htmlFor="phone">
-                  Phone Number <span className="required">*</span>
-                </label>
+                <label htmlFor="phone">Phone Number <span className="required">*</span></label>
                 <input
                   type="tel"
                   id="phone"
@@ -321,9 +301,7 @@ const Auth = () => {
           )}
 
           <div className="form-group-auth">
-            <label htmlFor="email">
-              Email {!isLogin ? <span className="required">*</span> : ""}
-            </label>
+            <label htmlFor="email">Email {!isLogin ? (<span className="required">*</span>) : ""}</label>
             <input
               type="email"
               id="email"
@@ -336,9 +314,7 @@ const Auth = () => {
           </div>
 
           <div className="form-group-auth password-group">
-            <label htmlFor="password">
-              Password {!isLogin ? <span className="required">*</span> : ""}
-            </label>
+            <label htmlFor="password">Password {!isLogin ? (<span className="required">*</span>) : ""}</label>
             <div className="password-input-container">
               <input
                 type={showPassword ? "text" : "password"}
@@ -366,9 +342,7 @@ const Auth = () => {
 
           {!isLogin && (
             <div className="form-group-auth password-group">
-              <label htmlFor="confirmPassword">
-                Confirm Password <span className="required">*</span>
-              </label>
+              <label htmlFor="confirmPassword">Confirm Password <span className="required">*</span></label>
               <div className="password-input-container">
                 <input
                   type={showConfirmPassword ? "text" : "password"}

@@ -206,7 +206,7 @@
   background-color: rgba(var(--primary-color-rgb), 0.1);
 }
 
-.primary-button {
+/* .primary-button {
   background-color: var(--primary-color);
   color: white;
   border: none;
@@ -219,7 +219,7 @@
 .primary-button:hover {
   background-color: var(--secondary-color);
   transform: translateY(-1px);
-}
+} */
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
@@ -242,10 +242,10 @@
     flex-direction: column;
   }
 
-  .secondary-button,
+  /* .secondary-button,
   .primary-button {
     width: 100%;
-  }
+  } */
 
   .modal-content {
     max-height: calc(90vh - 180px);
