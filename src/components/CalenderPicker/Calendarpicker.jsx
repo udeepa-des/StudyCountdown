@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import "./CalendarPicker.css";
+import "./Calendarpicker.css";
 
 const CalendarPicker = ({
   value,
