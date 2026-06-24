@@ -127,6 +127,13 @@ const Dashboard = () => {
   ];
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    }
+  }, [navigate]);
+
+  useEffect(() => {
     const fetchUserData = async () => {
       setPageLoading(true);
       try {
@@ -348,6 +355,11 @@ const Dashboard = () => {
     return <SplashScreen />;
   }
 
+  const onLogout = () => {
+    localStorage.clear();
+    navigate("/");
+  };
+
   return (
     <div
       className={`whole-page ${darkMode ? "dark-mode" : ""}`}
@@ -388,7 +400,7 @@ const Dashboard = () => {
           </div> */}
           <ProfilePopup
             darkMode={darkMode}
-            onLogout={() => navigate("/")}
+            onLogout={onLogout}
             onOpenSettings={handleOpenSettings}
             userAvatar={userSettings?.avatar}
             userName={userSettings?.name}

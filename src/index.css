@@ -23,7 +23,7 @@
   --dark-secondary: #8338ec;
   --dark-accent: #ff006e;
   --dark-success: #00bbf9;
-  --dark-text: #f8f9fa;
+  --dark-text: #e0e0e0;
   --dark-text-light: #adb5bd;
   --dark-bg: #121212;
   --dark-card-bg: #1e1e1e;
@@ -75,7 +75,7 @@ html {
 body {
   font-family: Open Sans;
   line-height: 1.6;
-  color: var(--text-color);
+  color: var(--text-light);
   background-color: var(--bg-color);
   transition:
     background-color 0.3s ease,
@@ -278,12 +278,24 @@ select {
   /* background-color: rgba(var(--card-bg-rgb), 0.6); */
   color: var(--text-color);
   width: 100%;
+  transition: all 0.3s ease;
+  background-color: var(--bg-color);
+  font-size: 14px;
+}
+
+.form-input:hover {
+  cursor: pointer;
+  border-color: #666;
 }
 
 .form-input:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+}
+
+textarea.form-input {
+  min-height: 120px;
+  resize: none;
 }
 
 .primary-btn-container {
@@ -505,7 +517,6 @@ select {
   h2 {
     text-align: center;
   }
-
 }
 
 /* Animation for countdown */

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./StudyPlanForm.css";
 import CalendarPicker from "../CalenderPicker/Calendarpicker";
+import PriorityDropdown from "../PriorityDropdown/PriorityDropdown";
 
 const StudyPlanForm = ({ onAddPlan }) => {
   const [formData, setFormData] = useState({
@@ -16,6 +17,12 @@ const StudyPlanForm = ({ onAddPlan }) => {
     notes: "",
   });
   const [errors, setErrors] = useState({});
+
+  const priorityOptions = [
+    { value: "low", label: "Low" },
+    { value: "medium", label: "Medium" },
+    { value: "high", label: "High" },
+  ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -87,12 +94,12 @@ const StudyPlanForm = ({ onAddPlan }) => {
   return (
     <section className="study-plan-form card">
       {/* <div className="header-title"> */}
-        <h2>Create Detailed Study Plan</h2>
+      <h2>Create Detailed Study Plan</h2>
       {/* </div> */}
       <form onSubmit={handleSubmit} className="form-grid">
         <div className="form-group">
           <label className="study-plan-label" htmlFor="subject">
-            Subject *
+            Subject <span className="required">*</span>
           </label>
           <input
             type="text"
@@ -126,7 +133,7 @@ const StudyPlanForm = ({ onAddPlan }) => {
 
         <div className="form-group">
           <label className="study-plan-label" htmlFor="hours">
-            Total Hours *
+            Total Hours <span className="required">*</span>
           </label>
           <input
             type="number"
@@ -196,20 +203,16 @@ const StudyPlanForm = ({ onAddPlan }) => {
         </div>
 
         <div className="form-group">
-          <label className="study-plan-label" htmlFor="priority">
+          {/* <label className="study-plan-label" htmlFor="priority">
             Priority
-          </label>
-          <select
-            id="priority"
-            name="priority"
+          </label> */}
+          <PriorityDropdown
+            options={priorityOptions}
             value={formData.priority}
-            onChange={handleChange}
-            className="form-input"
-          >
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-          </select>
+            onChange={(value) => setFormData({ ...formData, priority: value })}
+            label="Priority"
+            placeholder="Select priority..."
+          />
         </div>
 
         <div className="form-group">

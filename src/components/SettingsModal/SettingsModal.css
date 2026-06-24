@@ -108,7 +108,7 @@
   color: var(--dark-text);
 }
 
-.form-input {
+/* .form-input {
   width: 100%;
   padding: 0.75rem 1rem;
   border: 1px solid var(--border-color);
@@ -116,13 +116,13 @@
   background-color: var(--bg-color);
   color: var(--text-color);
   font-size: 1rem;
-}
+}*/
 
-.dark-mode .form-input {
+/* .dark-mode .form-input {
   background-color: var(--dark-bg);
   color: var(--dark-text);
   border-color: var(--dark-border);
-}
+} */
 
 .avatar-grid {
   display: grid;
