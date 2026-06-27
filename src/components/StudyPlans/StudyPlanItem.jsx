@@ -1,7 +1,12 @@
 import { useState } from "react";
 import "./StudyPlanItem.css";
 
-const StudyPlanItem = ({ plan, onToggleComplete, onDelete }) => {
+const StudyPlanItem = ({
+  plan,
+  onToggleComplete,
+  onDelete,
+  onMarkDayStudied,
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const formatDate = (dateString) => {
@@ -13,19 +18,98 @@ const StudyPlanItem = ({ plan, onToggleComplete, onDelete }) => {
     });
   };
 
-  const calculateProgress = () => {
+  // Total calendar days from startDate to endDate, inclusive
+  const getTotalDays = () => {
     if (!plan.startDate || !plan.endDate) return null;
     const start = new Date(plan.startDate);
     const end = new Date(plan.endDate);
+    return Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
+  };
+
+  // Progress driven by studiedDays array length vs total days
+  const calculateProgress = () => {
+    const total = getTotalDays();
+    if (!total) return 0;
+    const studied = (plan.studiedDays || []).length;
+    return Math.min(100, Math.round((studied / total) * 100));
+  };
+
+  const todayStr = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  };
+
+  const isTodayStudied = () => {
+    return (plan.studiedDays || []).includes(todayStr());
+  };
+
+  const isTodayInRange = () => {
+    if (!plan.startDate || !plan.endDate) return false;
     const today = new Date();
-    if (today > end) return 100;
-    if (today < start) return 0;
-    const totalDays = (end - start) / (1000 * 60 * 60 * 24);
-    const daysPassed = (today - start) / (1000 * 60 * 60 * 24);
-    return Math.min(100, Math.round((daysPassed / totalDays) * 100));
+    today.setHours(0, 0, 0, 0);
+    const start = new Date(plan.startDate);
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(plan.endDate);
+    end.setHours(0, 0, 0, 0);
+    return today >= start && today <= end;
+  };
+
+  const getStreak = () => {
+    const days = [...(plan.studiedDays || [])].sort();
+    if (!days.length) return 0;
+    let streak = 0;
+    let cursor = new Date();
+    cursor.setHours(0, 0, 0, 0);
+
+    // If today isn't studied yet, check from yesterday
+    const t = todayStr();
+    if (!days.includes(t)) {
+      cursor.setDate(cursor.getDate() - 1);
+    }
+
+    while (true) {
+      const s = `${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, "0")}-${String(cursor.getDate()).padStart(2, "0")}`;
+      if (!days.includes(s)) break;
+      streak++;
+      cursor.setDate(cursor.getDate() - 1);
+    }
+    return streak;
   };
 
   const progress = calculateProgress();
+  const totalDays = getTotalDays();
+  const studiedCount = (plan.studiedDays || []).length;
+  const streak = getStreak();
+  const alreadyMarked = isTodayStudied();
+  const inRange = isTodayInRange();
+
+  const getMarkButtonState = () => {
+    if (plan.completed)
+      return {
+        disabled: true,
+        label: "Plan completed",
+        className: "mark-btn mark-btn-disabled",
+      };
+    if (alreadyMarked)
+      return {
+        disabled: true,
+        label: "✓ Studied today",
+        className: "mark-btn mark-btn-done",
+      };
+    if (!inRange)
+      return {
+        disabled: true,
+        label: "Outside study range",
+        className: "mark-btn mark-btn-disabled",
+      };
+    return {
+      disabled: false,
+      label: "Mark Today as Studied",
+      className: "mark-btn mark-btn-active",
+    };
+  };
+
+  const btnState = getMarkButtonState();
 
   return (
     <div className={`plan-item ${plan.completed ? "completed" : ""}`}>
@@ -83,7 +167,7 @@ const StudyPlanItem = ({ plan, onToggleComplete, onDelete }) => {
               </span>
             )}
 
-            {progress !== null && (
+            {totalDays !== null && (
               <span className="meta-item">
                 <svg
                   className="meta-icon"
@@ -97,7 +181,13 @@ const StudyPlanItem = ({ plan, onToggleComplete, onDelete }) => {
                     strokeLinecap="round"
                   />
                 </svg>
-                {progress}%
+                {studiedCount}/{totalDays} days · {progress}%
+              </span>
+            )}
+
+            {streak > 0 && (
+              <span className="meta-item streak-badge">
+                🔥 {streak} day streak
               </span>
             )}
           </div>
@@ -109,9 +199,7 @@ const StudyPlanItem = ({ plan, onToggleComplete, onDelete }) => {
               e.stopPropagation();
               onToggleComplete(plan._id);
             }}
-            className={`action-btn ${
-              plan.completed ? "action-btn-undo" : "action-btn-complete"
-            }`}
+            className={`action-btn ${plan.completed ? "action-btn-undo" : "action-btn-complete"}`}
             aria-label={
               plan.completed ? "Mark as incomplete" : "Mark as complete"
             }
@@ -158,6 +246,41 @@ const StudyPlanItem = ({ plan, onToggleComplete, onDelete }) => {
       {/* Expanded Details */}
       {isExpanded && (
         <div className="plan-details-expanded">
+          {/* Mark Today as Studied */}
+          <div className="mark-day-section">
+            <button
+              className={btnState.className}
+              disabled={btnState.disabled}
+              onClick={() => onMarkDayStudied(plan._id)}
+            >
+              {!alreadyMarked && !btnState.disabled && (
+                <svg
+                  className="mark-btn-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M12 5v14M5 12h14"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              )}
+              {btnState.label}
+            </button>
+
+            <div className="studied-summary">
+              <span className="studied-count">
+                <strong>{studiedCount}</strong> of{" "}
+                <strong>{totalDays ?? "?"}</strong> days studied
+              </span>
+              {streak > 0 && (
+                <span className="streak-info">🔥 {streak}-day streak</span>
+              )}
+            </div>
+          </div>
+
           {/* Study Details */}
           <div className="detail-section">
             <h4 className="detail-section-title">Study Details</h4>
@@ -185,10 +308,10 @@ const StudyPlanItem = ({ plan, onToggleComplete, onDelete }) => {
                     <div className="progress-bar-bg">
                       <div
                         className="progress-bar"
-                        style={{ width: `${plan.progress || 0}%` }}
+                        style={{ width: `${progress}%` }}
                       />
                     </div>
-                    <span className="progress-text">{plan.progress || 0}%</span>
+                    <span className="progress-text">{progress}%</span>
                   </div>
                 </div>
               </div>

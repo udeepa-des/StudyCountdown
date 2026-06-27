@@ -1,6 +1,7 @@
 :root {
   /* Light Theme */
   --primary-color: #4361ee;
+  --button-hover: #2f4fd3;
   --primary-light: #4895ef;
   --secondary-color: #3f37c9;
   --accent-color: #f72585;
@@ -9,8 +10,8 @@
   --text-light: #8d99ae;
   --bg-color: #ebe8e2;
   --card-bg: #ffffff;
-  --border-color: #e9ecef;
-  --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --border-color: #929292;
+  --shadow: 0 4px 6px rgba(12, 12, 12, 0.493);
   --hover-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
   --primary-color-rgb: 67, 97, 238;
   --card-bg-rgb: 255, 255, 255;
@@ -73,7 +74,7 @@ html {
 }
 
 body {
-  font-family: Open Sans;
+  font-family: Lato;
   line-height: 1.6;
   color: var(--text-light);
   background-color: var(--bg-color);
@@ -176,7 +177,7 @@ select {
 
 .app-container {
   min-height: 100vh;
-  padding: 2rem;
+  /* padding: 2rem; */
   max-width: 1200px;
   margin: 0 auto;
   background-size: cover; /* Optional: makes sure the image covers the entire container */
@@ -188,7 +189,7 @@ select {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  /* margin-bottom: 2rem; */
   padding: 1rem;
   border-bottom: 1px solid var(--border-color);
   position: sticky;
@@ -202,8 +203,9 @@ select {
 
 .app-header h1 {
   font-size: 2.5rem;
-  font-family: "Michroma", sans-serif;
+  font-family: "Workbench", sans-serif;
   font-weight: 800;
+  margin-bottom: 0;
 }
 
 .cards-container {
@@ -211,12 +213,6 @@ select {
   grid-template-columns: repeat(2, 1fr); /* Two columns of equal width */
   gap: 1.5rem; /* Space between cards */
   margin-bottom: 1.5rem;
-}
-
-@media (max-width: 768px) {
-  .cards-container {
-    grid-template-columns: 1fr; /* Single column on smaller screens */
-  }
 }
 
 .card {
@@ -271,7 +267,7 @@ select {
 
 .form-input {
   padding: 0.75rem 1rem;
-  border: 1px solid var(--border-color);
+  border: 1px solid transparent;
   border-radius: 8px;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -285,7 +281,7 @@ select {
 
 .form-input:hover {
   cursor: pointer;
-  border-color: #666;
+  border: 1px solid #666;
 }
 
 .form-input:focus {
@@ -315,8 +311,8 @@ textarea.form-input {
 }
 
 .primary-button:hover {
-  background-color: var(--secondary-color);
-  transform: translateY(-1px);
+  background-color: var(--button-hover);
+  /* transform: translateY(-1px); */
 }
 
 .secondary-button {
@@ -481,6 +477,10 @@ textarea.form-input {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+  .cards-container {
+    grid-template-columns: 1fr; /* Single column on smaller screens */
+  }
+  
   .app-container {
     padding: 1rem;
   }
@@ -492,7 +492,11 @@ textarea.form-input {
   }
 
   .app-header h1 {
-    font-size: 2.2rem;
+    font-size: 1.5rem;
+  }
+
+  .motivational-quote {
+    font-size: 1.2rem;
   }
 
   .plan-item {
@@ -555,7 +559,7 @@ textarea.form-input {
 }
 
 /* Card Background Images */
-.card {
+/* .card {
   position: relative;
   overflow: hidden;
   background-size: cover;
@@ -563,7 +567,7 @@ textarea.form-input {
   background-repeat: no-repeat;
   z-index: 1;
   background-color: rgba(var(--card-bg-rgb), 0.9);
-}
+} */
 
 @supports (backdrop-filter: blur(16px)) or (-webkit-backdrop-filter: blur(16px)) {
   .card {
@@ -630,6 +634,7 @@ textarea.form-input {
 }
 
 .motivational-quote {
+  font-family: "Lavishly Yours", cursive !important;
   position: absolute;
   width: 100%;
   font-style: italic;

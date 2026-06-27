@@ -1,6 +1,11 @@
 import StudyPlanItem from "./StudyPlanItem";
 
-const StudyPlanList = ({ plans, onToggleComplete, onDelete }) => {
+const StudyPlanList = ({
+  plans,
+  onToggleComplete,
+  onDelete,
+  onMarkDayStudied,
+}) => {
   return (
     <section className="card">
       <h2>Your Study Plans</h2>
@@ -16,6 +21,7 @@ const StudyPlanList = ({ plans, onToggleComplete, onDelete }) => {
               plan={plan}
               onToggleComplete={onToggleComplete}
               onDelete={onDelete}
+              onMarkDayStudied={onMarkDayStudied}
             />
           ))}
         </ul>

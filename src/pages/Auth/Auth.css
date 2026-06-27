@@ -4,7 +4,7 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-image: url("../../assets/backgrounds/login-bg.jpg");
+  /* background-image: url("../../assets/backgrounds/login-bg.jpg"); */
   background-size: cover; /* cover the whole screen */
   background-position: center; /* center the image */
   background-repeat: no-repeat; /* no repeating */
@@ -33,6 +33,16 @@
   margin-bottom: 30px;
   color: var(--primary-color);
   font-size: 35px;
+}
+
+.auth-info {
+  background-color: #d8ecff;
+  border: 1px solid aqua;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: rgb(0, 153, 255);
+  padding: 10px;
 }
 
 .auth-error {
@@ -93,8 +103,8 @@
 }
 
 .auth-button:hover {
-  background-color: var(--secondary-color);
-  transform: translateY(-1px);
+  background-color: var(--button-hover);
+  /* transform: translateY(-1px); */
 }
 
 .auth-button:disabled {
@@ -216,9 +226,9 @@
   width: 100%;
   padding: 12px;
   /* margin-top: 15px; */
-  background-color: #f0f0f0;
+  background-color: #fff2db;
   color: #333;
-  border: 1px solid #ddd;
+  border: 1px solid #ffe5bf;
   border-radius: 8px;
   font-size: 16px;
   cursor: pointer;
@@ -226,7 +236,7 @@
 }
 
 .guest-login-button:hover {
-  background-color: #e0e0e0;
+  background-color: #ffe5bf;
 }
 
 .guest-login-button:disabled {

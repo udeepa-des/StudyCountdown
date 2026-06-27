@@ -115,6 +115,20 @@
   cursor: not-allowed;
 }
 
+.cp-day.today {
+  border: 2px solid #4361ee;
+  font-weight: 700;
+}
+
+.cp-day.today:not(.selected) {
+  background: rgba(67, 97, 238, 0.1);
+  color: #4361ee;
+}
+
+.cp-day.today.selected {
+  border: 2px solid #4361ee;
+}
+
 .cp-day.empty {
   pointer-events: none;
 }

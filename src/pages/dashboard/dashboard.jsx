@@ -342,6 +342,18 @@ const Dashboard = () => {
     }
   };
 
+  const handleMarkDayStudied = async (planId) => {
+    try {
+      const response = await axios.patch(`/api/plans/${planId}/mark-day`);
+      setPlans((prev) =>
+        prev.map((p) => (p._id === planId ? response.data : p)),
+      );
+    } catch (err) {
+      toast.error("Something went wrong when Marking as Studied");
+      console.error("Mark day error:", err);
+    }
+  };
+
   const handleDeletePlan = async (planId) => {
     try {
       await axios.delete(`/api/plans/${planId}`);
@@ -471,6 +483,7 @@ const Dashboard = () => {
                 plans={plans}
                 onToggleComplete={handleToggleComplete}
                 onDelete={handleDeletePlan}
+                onMarkDayStudied={handleMarkDayStudied}
               />
               {/* </section> */}
             </>

@@ -91,6 +91,14 @@ const StudyPlanForm = ({ onAddPlan }) => {
     setErrors({});
   };
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const toLocalISO = (d) => {
+    const local = new Date(d.getTime());
+    return local.toISOString().split("T")[0];
+  };
+
   return (
     <section className="study-plan-form card">
       {/* <div className="header-title"> */}
@@ -107,7 +115,7 @@ const StudyPlanForm = ({ onAddPlan }) => {
             name="subject"
             value={formData.subject}
             onChange={handleChange}
-            placeholder="e.g., Mathematics"
+            placeholder="e.g: Mathematics"
             className={`form-input ${errors.subject ? "error" : ""}`}
             required
           />
@@ -126,7 +134,7 @@ const StudyPlanForm = ({ onAddPlan }) => {
             name="topic"
             value={formData.topic}
             onChange={handleChange}
-            placeholder="e.g., Calculus"
+            placeholder="e.g: Calculus"
             className="form-input"
           />
         </div>
@@ -143,7 +151,7 @@ const StudyPlanForm = ({ onAddPlan }) => {
             onChange={handleChange}
             min="0.5"
             step="0.5"
-            placeholder="e.g., 10"
+            placeholder="e.g: 10"
             className={`form-input ${errors.hours ? "error" : ""}`}
             required
           />
@@ -154,7 +162,7 @@ const StudyPlanForm = ({ onAddPlan }) => {
 
         <div className="form-group">
           <label className="study-plan-label" htmlFor="daysPerWeek">
-            Days/Week
+            Days per Week
           </label>
           <input
             type="number"
@@ -181,6 +189,7 @@ const StudyPlanForm = ({ onAddPlan }) => {
             value={formData.startDate}
             onChange={handleDateChange("startDate")}
             placeholder="Select start date"
+            minDate={toLocalISO(today)}
             className={errors.startDate ? "error" : ""}
           />
         </div>
@@ -194,7 +203,7 @@ const StudyPlanForm = ({ onAddPlan }) => {
             value={formData.endDate}
             onChange={handleDateChange("endDate")}
             placeholder="Select end date"
-            minDate={formData.startDate || undefined}
+            minDate={formData.startDate || toLocalISO(today)}
             className={errors.endDate ? "error" : ""}
           />
           {errors.endDate && (
@@ -225,7 +234,7 @@ const StudyPlanForm = ({ onAddPlan }) => {
             name="milestone"
             value={formData.milestone}
             onChange={handleChange}
-            placeholder="e.g., Complete chapter 1"
+            placeholder="e.g: Complete chapter 1"
             className="form-input"
           />
         </div>
@@ -240,7 +249,7 @@ const StudyPlanForm = ({ onAddPlan }) => {
             name="resources"
             value={formData.resources}
             onChange={handleChange}
-            placeholder="e.g., Textbook, Online course, YouTube playlist"
+            placeholder="e.g: Textbook, Online course, YouTube playlist"
             className="form-input"
           />
         </div>

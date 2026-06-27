@@ -46,7 +46,7 @@
 .profile-name {
   font-size: 15px;
   font-weight: 500;
-  color: var(--text-color);
+  color: var(--text-light);
   white-space: nowrap;
 }
 

@@ -18,8 +18,8 @@
 
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
-    0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-lg:
+    0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 
   --transition-base: 0.2s ease-in-out;
   --transition-fast: 0.15s ease-in-out;
@@ -420,3 +420,104 @@
     gap: 0.25rem;
   }
 }
+
+/* ── Mark as completed ── */
+
+/* Streak badge in meta row */
+.streak-badge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-amber);
+}
+
+/* Mark Today as Studied section */
+.mark-day-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--color-gray-200);
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+/* Mark button base */
+.mark-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.1rem;
+  border: none;
+  border-radius: var(--border-radius-full);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.mark-btn-icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+/* Active — can be clicked */
+.mark-btn-active {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  box-shadow: 0 2px 8px rgb(59 130 246 / 0.35);
+}
+
+.mark-btn-active:hover {
+  background-color: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgb(59 130 246 / 0.45);
+}
+
+.mark-btn-active:active {
+  transform: translateY(0);
+}
+
+/* Already marked today */
+.mark-btn-done {
+  background-color: rgb(16 185 129 / 0.12);
+  color: #059669;
+  cursor: default;
+}
+
+/* Disabled (outside range / plan complete) */
+.mark-btn-disabled {
+  background-color: var(--color-gray-100);
+  color: var(--color-gray-400);
+  cursor: not-allowed;
+}
+
+/* Studied count + streak summary */
+.studied-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.8rem;
+  color: var(--color-gray-600);
+}
+
+.studied-count strong {
+  color: var(--color-gray-900);
+}
+
+.streak-info {
+  font-weight: 600;
+  color: var(--color-amber);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .mark-day-section {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+

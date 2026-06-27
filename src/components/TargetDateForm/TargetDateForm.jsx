@@ -35,12 +35,12 @@ const TargetDateForm = ({
   };
 
   return (
-    <section className="target-card">
+    <section className="card target-card">
       <h2>Set Your Countdown</h2>
       <form onSubmit={handleSubmit} className="form-grid">
         <input
           type="text"
-          placeholder="Target name (e.g., Final Exams)"
+          placeholder="Target name (e.g: Final Exams)"
           value={targetName}
           onChange={(e) => setTargetName(e.target.value)}
           className="form-input"

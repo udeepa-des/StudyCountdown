@@ -71,14 +71,22 @@ const CalendarPicker = ({
     for (let day = 1; day <= daysInMonth; day++) {
       const cellDate = new Date(year, month, day);
       cellDate.setHours(0, 0, 0, 0);
+
       const isPast = floor && cellDate <= floor;
       const isSelected = value && toLocalISO(cellDate) === value;
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const isToday = cellDate.getTime() === today.getTime();
 
       cells.push(
         <button
           type="button"
           key={day}
-          className={`cp-day${isPast ? " disabled" : ""}${isSelected ? " selected" : ""}`}
+          className={`cp-day${isPast ? " disabled" : ""}${
+            isSelected ? " selected" : ""
+          }${isToday ? " today" : ""}`}
           disabled={isPast}
           onClick={() => selectDate(day)}
         >
