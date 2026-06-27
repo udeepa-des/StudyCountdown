@@ -10,7 +10,7 @@
   --text-light: #8d99ae;
   --bg-color: #ebe8e2;
   --card-bg: #ffffff;
-  --border-color: #929292;
+  --border-color: #e5e7eb;
   --shadow: 0 4px 6px rgba(12, 12, 12, 0.493);
   --hover-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
   --primary-color-rgb: 67, 97, 238;
@@ -368,28 +368,9 @@ textarea.form-input {
 .plans-list {
   list-style: none;
   margin-top: 1rem;
-}
-
-.plan-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  border-radius: 8px;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  background-color: rgba(var(--bg-color-rgb), 0.6);
-  margin-bottom: 0.75rem;
-  transition: all 0.2s ease;
-}
-
-.plan-item:hover {
-  transform: translateX(2px);
-}
-
-.plan-item.completed {
-  opacity: 0.7;
-  background-color: rgba(76, 201, 240, 0.1);
+  overflow-y: auto;
+  max-height: 650px;
+  padding: 10px;
 }
 
 .plan-details h3 {
@@ -492,17 +473,15 @@ textarea.form-input {
   }
 
   .app-header h1 {
-    font-size: 1.5rem;
+    font-size: 2rem;
+  }
+
+  .motivational-container { 
+    height: 150px;
   }
 
   .motivational-quote {
-    font-size: 1.2rem;
-  }
-
-  .plan-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
+    font-size: 0.8rem;
   }
 
   .plan-actions {
@@ -715,6 +694,130 @@ textarea.form-input {
   justify-content: space-between;
   align-items: center;
   width: 100%;
+}
+
+/* Scroll Bar */
+
+/* Scrollbar Styling - Light Theme */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(var(--bg-color-rgb), 0.5);
+  border-radius: 10px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(var(--border-color), 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 10px;
+  border: 2px solid var(--card-bg);
+  transition: all 0.3s ease;
+  background: linear-gradient(
+    135deg,
+    var(--primary-color) 0%,
+    var(--secondary-color) 100%
+  );
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--button-hover);
+  background: linear-gradient(
+    135deg,
+    var(--button-hover) 0%,
+    var(--secondary-color) 100%
+  );
+  transform: scale(1.1);
+}
+
+/* Firefox Scrollbar Styling */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) rgba(var(--bg-color-rgb), 0.5);
+}
+
+/* Dark Theme Scrollbar */
+.dark-mode::-webkit-scrollbar-track {
+  background: rgba(var(--dark-bg-rgb), 0.8);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.dark-mode::-webkit-scrollbar-thumb {
+  background: var(--dark-primary);
+  background: linear-gradient(
+    135deg,
+    var(--dark-primary) 0%,
+    var(--dark-secondary) 100%
+  );
+  border-color: var(--dark-card-bg);
+}
+
+.dark-mode::-webkit-scrollbar-thumb:hover {
+  background: var(--dark-secondary);
+  background: linear-gradient(
+    135deg,
+    var(--dark-secondary) 0%,
+    var(--dark-primary) 100%
+  );
+}
+
+.dark-mode * {
+  scrollbar-color: var(--dark-primary) rgba(var(--dark-bg-rgb), 0.8);
+}
+
+/* Optional: Smooth scrollbar corners */
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Optional: Active state for scrollbar */
+::-webkit-scrollbar-thumb:active {
+  background: var(--secondary-color);
+  background: linear-gradient(
+    135deg,
+    var(--secondary-color) 0%,
+    var(--button-hover) 100%
+  );
+}
+
+.dark-mode::-webkit-scrollbar-thumb:active {
+  background: var(--dark-secondary);
+  background: linear-gradient(
+    135deg,
+    var(--dark-secondary) 0%,
+    var(--dark-primary) 100%
+  );
+}
+
+/* Optional: For specific containers */
+.scrollable-container {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) transparent;
+}
+
+.scrollable-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollable-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollable-container::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 10px;
+}
+
+.dark-mode .scrollable-container {
+  scrollbar-color: var(--dark-primary) transparent;
+}
+
+.dark-mode .scrollable-container::-webkit-scrollbar-thumb {
+  background: var(--dark-primary);
 }
 
 /* Alternative Roll Up Animation (uncomment to use) */

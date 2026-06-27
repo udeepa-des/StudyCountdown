@@ -28,6 +28,7 @@ import Background3 from "../../assets/backgrounds/bg3.jpg";
 import Background4 from "../../assets/backgrounds/bg4.png";
 import SplashScreen from "../../components/SplashScreen/SplashScreen";
 import ConfirmationPopup from "../../components/ConfirmationPopup/ConfirmationPopup";
+import StudyPlanDetailModal from "../../components/StudyPlans/StudyPlanDetailModal/StudyPlanDetailModal";
 import { getDateAtMidnight } from "../../utils/getDateAtMidnight";
 import toast from "react-hot-toast";
 // import Background5 from "../../assets/backgrounds/bg5.jpg";
@@ -87,6 +88,7 @@ const Dashboard = () => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState(null);
 
   const motivationalQuotes = [
     "The future belongs to those who believe in the beauty of their dreams. - Eleanor Roosevelt",
@@ -483,7 +485,7 @@ const Dashboard = () => {
                 plans={plans}
                 onToggleComplete={handleToggleComplete}
                 onDelete={handleDeletePlan}
-                onMarkDayStudied={handleMarkDayStudied}
+                onShowMore={setSelectedPlan}
               />
               {/* </section> */}
             </>
@@ -528,6 +530,14 @@ const Dashboard = () => {
         loading={isDeleting}
         loadingLabel="Deleting..."
       />
+
+      {selectedPlan && (
+        <StudyPlanDetailModal
+          plan={plans.find((p) => p._id === selectedPlan._id) ?? selectedPlan}
+          onClose={() => setSelectedPlan(null)}
+          onMarkDayStudied={handleMarkDayStudied}
+        />
+      )}
     </div>
   );
 };

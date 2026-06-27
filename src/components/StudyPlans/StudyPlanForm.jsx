@@ -141,7 +141,7 @@ const StudyPlanForm = ({ onAddPlan }) => {
 
         <div className="form-group">
           <label className="study-plan-label" htmlFor="hours">
-            Total Hours <span className="required">*</span>
+            Hours per day <span className="required">*</span>
           </label>
           <input
             type="number"

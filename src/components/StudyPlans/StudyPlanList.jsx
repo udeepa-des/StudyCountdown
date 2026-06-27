@@ -4,7 +4,7 @@ const StudyPlanList = ({
   plans,
   onToggleComplete,
   onDelete,
-  onMarkDayStudied,
+  onShowMore,
 }) => {
   return (
     <section className="card">
@@ -21,7 +21,7 @@ const StudyPlanList = ({
               plan={plan}
               onToggleComplete={onToggleComplete}
               onDelete={onDelete}
-              onMarkDayStudied={onMarkDayStudied}
+              onShowMore={onShowMore}
             />
           ))}
         </ul>
