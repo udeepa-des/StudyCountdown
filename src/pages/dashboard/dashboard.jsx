@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { FaBars, FaTimes } from "react-icons/fa";
 import ThemeToggle from "../../components/ThemeToggle/ThemeToggle";
 import TargetDateForm from "../../components/TargetDateForm/TargetDateForm";
 import CountdownTimer from "../../components/CountdownTimer/CountdownTimer";
@@ -8,6 +9,8 @@ import StudyPlanList from "../../components/StudyPlans/StudyPlanList";
 import SoundPlayer from "../../components/SoundPlayer/SoundPlayer";
 import ProfilePopup from "../../components/ProfilePopup/ProfilePopup";
 import SettingsModal from "../../components/SettingsModal/SettingsModal";
+import Reminder from "../../components/Reminder/Reminder";
+import ReminderModal from "../../components/ReminderModal/ReminderModal";
 import Astronaut from "../../assets/avatars/astronaut.png";
 import Bee from "../../assets/avatars/bee.png";
 import Bat from "../../assets/avatars/bat.png";
@@ -31,7 +34,6 @@ import ConfirmationPopup from "../../components/ConfirmationPopup/ConfirmationPo
 import StudyPlanDetailModal from "../../components/StudyPlans/StudyPlanDetailModal/StudyPlanDetailModal";
 import { getDateAtMidnight } from "../../utils/getDateAtMidnight";
 import toast from "react-hot-toast";
-// import Background5 from "../../assets/backgrounds/bg5.jpg";
 
 axios.defaults.baseURL =
   import.meta.env.VITE_API_URL || "http://localhost:5000";
@@ -55,7 +57,6 @@ axios.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      // Handle unauthorized access (e.g., redirect to login)
       localStorage.removeItem("token");
       window.location.href = "/login";
     }
@@ -71,16 +72,20 @@ const Dashboard = () => {
   const [countdown, setCountdown] = useState("");
   const [plans, setPlans] = useState([]);
   const [email, setEmail] = useState("");
-  const [backgroundImage, setBackgroundImage] = useState("");
   const [phone, setPhone] = useState("");
+  const [backgroundImage, setBackgroundImage] = useState("");
   const [isTargetSet, setIsTargetSet] = useState(false);
   const [userId, setUserId] = useState("");
   const [pageLoading, setPageLoading] = useState(true);
-  // const [activeTab, setActiveTab] = useState("countdown");
+  const [activeTab, setActiveTab] = useState("countdown");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [userSettings, setUserSettings] = useState({
     name: "",
     avatar: "",
+    email: "",
+    notificationEmail: "",
+    phone: "",
     emailNotifications: true,
     mobileNotifications: true,
     background: "",
@@ -89,6 +94,11 @@ const Dashboard = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
+
+  // Reminder states
+  const [showReminderModal, setShowReminderModal] = useState(false);
+  const [reminderData, setReminderData] = useState(null);
+  const [reminderTriggered, setReminderTriggered] = useState(false);
 
   const motivationalQuotes = [
     "The future belongs to those who believe in the beauty of their dreams. - Eleanor Roosevelt",
@@ -101,6 +111,8 @@ const Dashboard = () => {
 
   const [currentQuote, setCurrentQuote] = useState(motivationalQuotes[0]);
   const [isAnimating, setIsAnimating] = useState(false);
+
+  const reminderSnoozeRef = useRef(null);
   const quoteRef = useRef();
 
   const avatars = [
@@ -125,7 +137,6 @@ const Dashboard = () => {
     { id: "bg2", name: "Abstract 2", src: Background2 },
     { id: "bg3", name: "Nature", src: Background3 },
     { id: "bg4", name: "Space", src: Background4 },
-    // { id: "bg5", name: "Gradient", value: Background5 },
   ];
 
   useEffect(() => {
@@ -153,12 +164,19 @@ const Dashboard = () => {
 
         console.log("response: ", response);
         setUserSettings({
-          name: response?.data?.name,
-          avatar: response?.data?.avatar,
-          emailNotifications: true,
-          mobileNotifications: true,
+          name: response?.data?.name || "",
+          avatar: response?.data?.avatar || "",
+          email: response?.data?.email || "",
+          notificationEmail:
+            response?.data?.notificationEmail || response?.data?.email || "",
+          phone: response?.data?.phone || "",
+          emailNotifications: response?.data?.emailNotifications !== false,
+          mobileNotifications: response?.data?.mobileNotifications !== false,
           background: response?.data?.background || "",
+          reminders: response?.data?.reminders || [],
         });
+        setEmail(response?.data?.email || "");
+        setPhone(response?.data?.phone || "");
         setBackgroundImage(response?.data?.background || "");
         setUserId(response.data._id);
         if (response.data.targetDate) {
@@ -365,6 +383,47 @@ const Dashboard = () => {
     }
   };
 
+  // Reminder handlers
+  const handleReminderTrigger = async (data) => {
+    setReminderData(data);
+    setShowReminderModal(true);
+
+    // Send notifications to backend
+    try {
+      const token = localStorage.getItem("token");
+      await axios.post(
+        "/api/send-reminder",
+        {
+          reminderId: data.id,
+          label: data.label,
+          targetName: data.targetName,
+          targetDate: data.date,
+          reminderTime: data.reminderTime,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+    } catch (error) {
+      console.error("Error sending reminder:", error);
+      toast.error("Failed to send reminder notification");
+    }
+  };
+
+  const handleReminderSnooze = (reminderId) => {
+    toast.success("Reminder snoozed for 5 minutes");
+    setShowReminderModal(false);
+    if (reminderSnoozeRef.current && reminderId) {
+      reminderSnoozeRef.current(reminderId);
+    }
+  };
+
+  const handleReminderClose = () => {
+    setShowReminderModal(false);
+  };
+
   if (pageLoading) {
     return <SplashScreen />;
   }
@@ -394,13 +453,46 @@ const Dashboard = () => {
     >
       <header className="app-header">
         <h1>MindStreamer</h1>
-
         <div className="header-actions">
-          {/* <div className="tabs-container">
+          {/* Hamburger Menu - Mobile */}
+          <div className="mobile-menu-wrapper">
             <button
-              className={`tab-button ${
-                activeTab === "countdown" ? "active" : ""
-              }`}
+              className="hamburger-button"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
+            </button>
+
+            {/* Mobile Dropdown Menu */}
+            {isMobileMenuOpen && (
+              <div className="mobile-dropdown-menu">
+                <button
+                  className={`mobile-menu-item ${activeTab === "countdown" ? "active" : ""}`}
+                  onClick={() => {
+                    setActiveTab("countdown");
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  Countdown
+                </button>
+                <button
+                  className={`mobile-menu-item ${activeTab === "plans" ? "active" : ""}`}
+                  onClick={() => {
+                    setActiveTab("plans");
+                    setIsMobileMenuOpen(false);
+                  }}
+                >
+                  Study Plans
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Desktop Tabs */}
+          <div className="tabs-container desktop-tabs">
+            <button
+              className={`tab-button ${activeTab === "countdown" ? "active" : ""}`}
               onClick={() => setActiveTab("countdown")}
             >
               Countdown
@@ -411,7 +503,8 @@ const Dashboard = () => {
             >
               Study Plans
             </button>
-          </div> */}
+          </div>
+
           <ProfilePopup
             darkMode={darkMode}
             onLogout={onLogout}
@@ -435,61 +528,72 @@ const Dashboard = () => {
           </div>
 
           <div className="cards-container">
-            {/* {activeTab === "countdown" && ( */}
-            <div className="full-width-card">
-              <div
-                className={`${
-                  isTargetSet ? "target-date-card" : "target-form-card"
-                } `}
-              >
-                {!isTargetSet && (
-                  // <section className="card target-date-card">
-                  <TargetDateForm
-                    targetName={targetName}
-                    setTargetName={setTargetName}
-                    targetDate={targetDate}
-                    setTargetDate={setTargetDate}
-                    handleSetTargetDate={handleSetTargetDate}
-                    handleUpdateTargetDate={handleUpdateTargetDate}
-                    setCountdown={setCountdown}
-                    setIsTargetSet={setIsTargetSet}
-                    isEditing={isEditing}
-                  />
-                  // </section>
-                )}
+            {activeTab === "countdown" && (
+              <>
+                <div className="full-width-card">
+                  <div
+                    className={`${
+                      isTargetSet ? "target-date-card" : "target-form-card"
+                    } `}
+                  >
+                    {!isTargetSet && (
+                      <TargetDateForm
+                        targetName={targetName}
+                        setTargetName={setTargetName}
+                        targetDate={targetDate}
+                        setTargetDate={setTargetDate}
+                        handleSetTargetDate={handleSetTargetDate}
+                        handleUpdateTargetDate={handleUpdateTargetDate}
+                        setCountdown={setCountdown}
+                        setIsTargetSet={setIsTargetSet}
+                        isEditing={isEditing}
+                      />
+                    )}
 
-                {countdown && isTargetSet && (
-                  // <section className="card countdown-card-bg">
-                  <CountdownTimer
-                    countdown={countdown}
-                    setIsTargetSet={setIsTargetSet}
-                    targetName={targetName}
-                    onDelete={handleDeleteClick}
-                    setIsEditing={setIsEditing}
-                  />
-                  // </section>
-                )}
-              </div>
+                    {countdown && isTargetSet && (
+                      <CountdownTimer
+                        countdown={countdown}
+                        setIsTargetSet={setIsTargetSet}
+                        targetName={targetName}
+                        onDelete={handleDeleteClick}
+                        setIsEditing={setIsEditing}
+                      />
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Reminder Card - Separate from Countdown */}
+            <div className="full-width-card">
+              <Reminder
+                shouldDisplay={activeTab === "countdown"}
+                darkMode={darkMode}
+                onReminderTrigger={handleReminderTrigger}
+                onSnoozeReady={(fn) => {
+                  reminderSnoozeRef.current = fn;
+                }}
+                targetName={targetName}
+                targetDate={targetDate}
+                email={userSettings.notificationEmail}
+                phone={userSettings.phone}
+              />
             </div>
 
-            {/* )} */}
+            {activeTab === "plans" && (
+              <>
+                <section>
+                  <StudyPlanForm onAddPlan={handleAddPlan} />
+                </section>
 
-            {/* {activeTab === "plans" && ( */}
-            <>
-              <section>
-                <StudyPlanForm onAddPlan={handleAddPlan} />
-              </section>
-
-              {/* <section> */}
-              <StudyPlanList
-                plans={plans}
-                onToggleComplete={handleToggleComplete}
-                onDelete={handleDeletePlan}
-                onShowMore={setSelectedPlan}
-              />
-              {/* </section> */}
-            </>
-            {/* )} */}
+                <StudyPlanList
+                  plans={plans}
+                  onToggleComplete={handleToggleComplete}
+                  onDelete={handleDeletePlan}
+                  onShowMore={setSelectedPlan}
+                />
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -501,14 +605,21 @@ const Dashboard = () => {
         setDarkMode={setDarkMode}
         initialName={userSettings.name}
         initialAvatar={userSettings.avatar}
-        initialBackground={userSettings.background}
+        initialAccountEmail={userSettings.email}
+        initialNotificationEmail={userSettings.notificationEmail}
+        initialPhone={userSettings.phone}
         initialEmailNotifications={userSettings.emailNotifications}
         initialMobileNotifications={userSettings.mobileNotifications}
+        initialBackground={userSettings.background}
         avatars={avatars}
         backgroundOptions={backgroundOptions}
         onSave={(newSettings) => {
-          console.log("newSettings: ", newSettings);
-          setUserSettings(newSettings);
+          setUserSettings({
+            ...newSettings,
+            email: newSettings.accountEmail,
+          });
+          setEmail(newSettings.accountEmail);
+          setPhone(newSettings.phone);
           setIsSettingsOpen(false);
           if (newSettings.background !== userSettings.background) {
             const selectedBg = backgroundOptions.find(
@@ -538,6 +649,19 @@ const Dashboard = () => {
           onMarkDayStudied={handleMarkDayStudied}
         />
       )}
+
+      {/* Reminder Modal at Dashboard Level */}
+      <ReminderModal
+        isOpen={showReminderModal}
+        // isOpen={true}
+        onClose={handleReminderClose}
+        notificationEmail={
+          userSettings?.notificationEmail || userSettings?.email
+        }
+        reminderData={reminderData}
+        darkMode={darkMode}
+        onSnooze={handleReminderSnooze}
+      />
     </div>
   );
 };

@@ -13,7 +13,7 @@
 }
 
 .auth-card {
-  background-color: rgba(var(--card-bg-rgb), 0.9);
+  background-color: transparent !important;
   border-radius: 12px;
   padding: 2.5rem;
   box-shadow: var(--shadow);

@@ -98,7 +98,7 @@
 }
 
 .action-btn-delete {
-  color: #e76e6e;
+  color: var(--accent-color);
 }
 .action-btn-delete:hover {
   background-color: rgb(239 68 68 / 0.1);

@@ -76,6 +76,10 @@ const StudyPlanForm = ({ onAddPlan }) => {
 
     onAddPlan(finalPlan);
 
+    clearForm();
+  };
+
+  const clearForm = () => {
     setFormData({
       subject: "",
       topic: "",
@@ -224,7 +228,7 @@ const StudyPlanForm = ({ onAddPlan }) => {
           />
         </div>
 
-        <div className="form-group">
+        <div className="form-group milestone">
           <label className="study-plan-label" htmlFor="milestone">
             Milestone
           </label>
@@ -268,13 +272,21 @@ const StudyPlanForm = ({ onAddPlan }) => {
             rows="3"
           />
         </div>
+      </form>
 
-        <div className="form-submit full-width">
+        <div className="sp-footer">
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={clearForm}
+            title="Clear all fields"
+          >
+            Clear All
+          </button>
           <button type="submit" className="primary-button">
             Create Study Plan
           </button>
         </div>
-      </form>
     </section>
   );
 };

@@ -101,10 +101,10 @@ const SoundPlayer = () => {
   };
 
   const getSpeakerIcon = () => {
-    if (isMuted || volume === 0) return <FaVolumeMute />;
-    if (volume < 0.3) return <FaVolumeOff />;
-    if (volume < 0.7) return <FaVolumeDown />;
-    return <FaVolumeUp />;
+    if (isMuted || volume === 0) return <FaVolumeMute color="var(--text-light)" />;
+    if (volume < 0.3) return <FaVolumeOff color="var(--text-light)" />;
+    if (volume < 0.7) return <FaVolumeDown color="var(--text-light)" />;
+    return <FaVolumeUp color="var(--text-light)" />;
   };
 
   return (

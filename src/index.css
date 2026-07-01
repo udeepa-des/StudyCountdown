@@ -10,7 +10,7 @@
   --text-light: #8d99ae;
   --bg-color: #ebe8e2;
   --card-bg: #ffffff;
-  --border-color: #e5e7eb;
+  --border-color: #585858;
   --shadow: 0 4px 6px rgba(12, 12, 12, 0.493);
   --hover-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
   --primary-color-rgb: 67, 97, 238;
@@ -190,7 +190,6 @@ select {
   justify-content: space-between;
   align-items: center;
   /* margin-bottom: 2rem; */
-  padding: 1rem;
   border-bottom: 1px solid var(--border-color);
   position: sticky;
   top: 0;
@@ -198,7 +197,8 @@ select {
   background: rgba(var(--card-bg), 0.95);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  box-shadow: var(--bar-shadow);
+  /* box-shadow: var(--bar-shadow); */
+  padding: 0.5rem;
 }
 
 .app-header h1 {
@@ -226,7 +226,7 @@ select {
     box-shadow 0.3s ease;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px); /* For Safari */
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
   min-height: 300px; /* Or whatever height works for your content */
   display: flex;
   flex-direction: column;
@@ -259,11 +259,11 @@ select {
   margin: 1rem 0;
 }
 
-.form-grid {
+/* .form-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1rem;
-}
+} */
 
 .form-input {
   padding: 0.75rem 1rem;
@@ -279,7 +279,11 @@ select {
   font-size: 14px;
 }
 
-.form-input:hover {
+.form-input:disabled {
+  opacity: 0.6;
+}
+
+.form-input:not(:disabled):hover {
   cursor: pointer;
   border: 1px solid #666;
 }
@@ -318,7 +322,7 @@ textarea.form-input {
 .secondary-button {
   background-color: transparent;
   color: var(--primary-color);
-  border: 1px solid var(--primary-color);
+  border: none;
   padding: 0.5rem 1rem;
   border-radius: 6px;
 }
@@ -369,7 +373,7 @@ textarea.form-input {
   list-style: none;
   margin-top: 1rem;
   overflow-y: auto;
-  max-height: 650px;
+  max-height: 550px;
   padding: 10px;
 }
 
@@ -414,46 +418,131 @@ textarea.form-input {
 
 .tabs-container {
   display: flex;
-  margin-right: 50px;
-  border-bottom: 1px solid #ccc;
+  /* margin-right: 10px; */
+  gap: 2px;
+  /* border-bottom: 1px solid #ccc; */
 }
 
 .tab-button {
-  padding: 10px 20px;
+  padding: 0.3rem 20px;
   background: none;
-  border: none;
+  border: 1px solid transparent;
+  border-radius: 50px;
   cursor: pointer;
-  font-size: 16px;
-  color: #666;
-  position: relative;
+  font-size: 15px;
+  color: var(--text-light);
+  transition: all 0.3s ease;
+}
+
+.tab-button:hover {
+  color: #ffffffb6;
+  background: rgba(var(--primary-color-rgb), 0.1);
+  /* border-radius: 20px 20px 0 0; */
+  border: 1px solid var(--border-color);
 }
 
 .tab-button.active {
-  color: #000;
-  font-weight: bold;
+  padding: 0.5rem 20px;
+  color: #ffffffb6;
+  font-weight: 500;
+  backdrop-filter: blur(50px);
+  -webkit-backdrop-filter: blur(50px);
+  background: rgba(var(--primary-color-rgb), 0.2);
+  border: 1px solid var(--border-color);
+  /* margin: -20px 0; */
+  /* padding-bottom: 0; */
 }
 
-.tab-button.active::after {
-  content: "";
+.desktop-tabs {
+  display: flex;
+}
+
+.mobile-menu-wrapper {
+  display: none;
+  position: relative;
+}
+
+.hamburger-button {
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.5rem;
+  color: var(--text-color);
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  transition: all 0.3s ease;
+}
+
+.hamburger-button:hover {
+  background-color: rgba(var(--primary-color-rgb), 0.1);
+}
+
+/* Mobile Dropdown Menu */
+.mobile-dropdown-menu {
   position: absolute;
-  bottom: -1px;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: var(--shadow-elevation-high);
+  min-width: 200px;
+  overflow: hidden;
+  z-index: 1000;
+  animation: slideDown 0.3s ease;
+}
+
+.mobile-menu-item {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  background: none;
+  border: none;
+  color: var(--text-color);
+  font-size: 0.95rem;
+  text-align: left;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.mobile-menu-item:hover {
+  background: rgba(var(--primary-color-rgb), 0.1);
+}
+
+.mobile-menu-item.active {
+  background: rgba(var(--primary-color-rgb), 0.15);
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.mobile-menu-item:not(:last-child) {
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Slide down animation */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobile-dropdown-menu-overlay {
+  position: fixed;
+  top: 0;
   left: 0;
   right: 0;
-  height: 3px;
-  background-color: #4caf50;
-}
-
-/* Dark mode styles */
-.dark-mode .tab-button {
-  color: #aaa;
-}
-
-.dark-mode .tab-button.active {
-  color: #fff;
-}
-
-.dark-mode .tab-button.active::after {
-  background-color: #81c784;
+  bottom: 0;
+  z-index: 999;
+  background: transparent;
 }
 
 /* Responsive adjustments */
@@ -461,27 +550,19 @@ textarea.form-input {
   .cards-container {
     grid-template-columns: 1fr; /* Single column on smaller screens */
   }
-  
+
   .app-container {
     padding: 1rem;
   }
 
-  .app-header {
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  .app-header h1 {
-    font-size: 2rem;
-  }
-
-  .motivational-container { 
-    height: 150px;
+  .motivational-container {
+    height: 130px !important;
+    margin: 0 auto 0 !important;
   }
 
   .motivational-quote {
-    font-size: 0.8rem;
+    font-size: 1.7rem !important;
+    color: red;
   }
 
   .plan-actions {
@@ -498,7 +579,33 @@ textarea.form-input {
   }
 
   h2 {
+    font-size: 1.4rem;
     text-align: center;
+  }
+
+  .desktop-tabs {
+    display: none;
+  }
+
+  .mobile-menu-wrapper {
+    display: block;
+  }
+
+  .app-header {
+    padding: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .app-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .header-actions {
+    gap: 0.5rem;
+  }
+
+  .profile-popup-trigger .user-name {
+    display: none;
   }
 }
 
@@ -577,7 +684,7 @@ textarea.form-input {
   background: rgba(var(--card-bg-rgb), 0.7);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-radius: 50px;
+  border-radius: 16px;
   padding: 1.5rem 0.5rem;
   box-shadow: var(--shadow);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -625,10 +732,6 @@ textarea.form-input {
   transition: all 0.5s ease;
 }
 
-.dark-mode .motivational-quote {
-  color: var(--dark-text-light);
-}
-
 /* Motivational Quote Container */
 .motivational-container {
   display: flex;
@@ -651,10 +754,6 @@ textarea.form-input {
   line-height: 1.5;
   transition: all 0.5s ease;
   padding: 0 1rem;
-}
-
-.dark-mode .motivational-quote {
-  color: var(--dark-text-light);
 }
 
 /* Animation Styles */

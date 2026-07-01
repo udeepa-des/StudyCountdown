@@ -4,15 +4,25 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(2px);
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   opacity: 0;
-  animation: fadeIn 0.2s ease forwards;
+  animation: spiBackdropIn 0.3s ease forwards;
   z-index: 1000;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 1rem;
+}
+
+@keyframes spiBackdropIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .settings-modal {
@@ -26,6 +36,18 @@
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: var(--shadow);
+  animation: modalSlideUp 0.3s ease;
+}
+
+@keyframes modalSlideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .settings-modal.dark-mode {
@@ -102,6 +124,12 @@
   font-size: 20px;
   font-weight: 500;
   color: var(--text-color);
+}
+
+.user-settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .dark-mode .form-group-setting-modal label {
@@ -195,7 +223,7 @@
 .secondary-button {
   background-color: transparent;
   color: var(--primary-color);
-  border: 1px solid var(--primary-color);
+  border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
   font-weight: 500;
@@ -204,6 +232,82 @@
 
 .secondary-button:hover {
   background-color: rgba(var(--primary-color-rgb), 0.1);
+}
+
+.readonly-field-wrapper {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  position: relative;
+}
+
+.readonly-field-wrapper .form-input {
+  flex: 1;
+}
+
+.edit-field-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-light);
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.icon-btn:hover {
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+.action-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.field-hint {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  margin-top: 0.25rem;
+}
+
+.dark-mode .cancel-edit-btn {
+  color: var(--dark-text);
+  border-color: var(--dark-border);
+}
+
+.dark-mode .cancel-edit-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+@media (max-width: 480px) {
+  .readonly-field-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .edit-field-btn,
+  .edit-field-actions {
+    width: 100%;
+  }
+
+  .edit-field-actions {
+    flex-direction: row;
+  }
+
+  .edit-field-actions button {
+    flex: 1;
+  }
 }
 
 /* .primary-button {
