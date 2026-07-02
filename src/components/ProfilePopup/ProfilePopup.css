@@ -51,12 +51,9 @@
 }
 
 @media (max-width: 768px) {
-  .profile-name {
-    display: none; /* Hide username on smaller screens */
-  }
 
   .profile-button {
-    padding: 4px;
+    display: none;
   }
 }
 

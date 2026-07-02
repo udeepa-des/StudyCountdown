@@ -1,6 +1,7 @@
 .card.target-card {
   width: 100%;
   padding: 1.5rem;
+  margin-top: 1.5rem;
   /* box-shadow: var(--shadow);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);

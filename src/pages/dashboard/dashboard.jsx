@@ -11,6 +11,7 @@ import ProfilePopup from "../../components/ProfilePopup/ProfilePopup";
 import SettingsModal from "../../components/SettingsModal/SettingsModal";
 import Reminder from "../../components/Reminder/Reminder";
 import ReminderModal from "../../components/ReminderModal/ReminderModal";
+import Sidebar from "../../components/Sidebar/Sidebar"; // Import Sidebar
 import Astronaut from "../../assets/avatars/astronaut.png";
 import Bee from "../../assets/avatars/bee.png";
 import Bat from "../../assets/avatars/bat.png";
@@ -29,6 +30,9 @@ import Background1 from "../../assets/backgrounds/bg1.png";
 import Background2 from "../../assets/backgrounds/bg2.jpg";
 import Background3 from "../../assets/backgrounds/bg3.jpg";
 import Background4 from "../../assets/backgrounds/bg4.png";
+import Background5 from "../../assets/backgrounds/login-bg.jpg";
+import LogoIcon from "../../assets/logo/logo.png";
+import LogoTitle from "../../assets/logo/logo_title.png";
 import SplashScreen from "../../components/SplashScreen/SplashScreen";
 import ConfirmationPopup from "../../components/ConfirmationPopup/ConfirmationPopup";
 import StudyPlanDetailModal from "../../components/StudyPlans/StudyPlanDetailModal/StudyPlanDetailModal";
@@ -79,7 +83,7 @@ const Dashboard = () => {
   const [pageLoading, setPageLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("countdown");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Changed from isMobileMenuOpen
   const [userSettings, setUserSettings] = useState({
     name: "",
     avatar: "",
@@ -133,10 +137,11 @@ const Dashboard = () => {
 
   const backgroundOptions = [
     { id: "default", name: "Default", src: "" },
-    { id: "bg1", name: "Abstract 1", src: Background1 },
-    { id: "bg2", name: "Abstract 2", src: Background2 },
-    { id: "bg3", name: "Nature", src: Background3 },
-    { id: "bg4", name: "Space", src: Background4 },
+    { id: "bg1", name: "Midnight Café", src: Background1 },
+    { id: "bg2", name: "Café de Lumière", src: Background2 },
+    { id: "bg3", name: "LoFi Hangout", src: Background3 },
+    { id: "bg4", name: "Golden Hour Study", src: Background4 },
+    { id: "bg5", name: "Rainy Retreat", src: Background5 },
   ];
 
   useEffect(() => {
@@ -204,6 +209,7 @@ const Dashboard = () => {
 
   const handleOpenSettings = () => {
     setIsSettingsOpen(true);
+    setIsSidebarOpen(false); // Close sidebar when opening settings
   };
 
   const changeQuote = () => {
@@ -424,14 +430,14 @@ const Dashboard = () => {
     setShowReminderModal(false);
   };
 
-  if (pageLoading) {
-    return <SplashScreen />;
-  }
-
   const onLogout = () => {
     localStorage.clear();
     navigate("/");
   };
+
+  if (pageLoading) {
+    return <SplashScreen />;
+  }
 
   return (
     <div
@@ -452,41 +458,21 @@ const Dashboard = () => {
       }
     >
       <header className="app-header">
-        <h1>MindStreamer</h1>
+        <div className="logo-container">
+          <img src={LogoIcon} alt="Logo" className="logo-icon" />
+          <img src={LogoTitle} alt="Logo" className="logo-title" />
+          {/* <h1>MindStreamer</h1> */}
+        </div>
         <div className="header-actions">
           {/* Hamburger Menu - Mobile */}
           <div className="mobile-menu-wrapper">
             <button
               className="hamburger-button"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-label="Toggle menu"
+              onClick={() => setIsSidebarOpen(true)}
+              aria-label="Open menu"
             >
-              {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
+              <FaBars />
             </button>
-
-            {/* Mobile Dropdown Menu */}
-            {isMobileMenuOpen && (
-              <div className="mobile-dropdown-menu">
-                <button
-                  className={`mobile-menu-item ${activeTab === "countdown" ? "active" : ""}`}
-                  onClick={() => {
-                    setActiveTab("countdown");
-                    setIsMobileMenuOpen(false);
-                  }}
-                >
-                  Countdown
-                </button>
-                <button
-                  className={`mobile-menu-item ${activeTab === "plans" ? "active" : ""}`}
-                  onClick={() => {
-                    setActiveTab("plans");
-                    setIsMobileMenuOpen(false);
-                  }}
-                >
-                  Study Plans
-                </button>
-              </div>
-            )}
           </div>
 
           {/* Desktop Tabs */}
@@ -598,6 +584,22 @@ const Dashboard = () => {
         </div>
       </div>
       <SoundPlayer />
+
+      {/* Sidebar Component */}
+      <Sidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+        darkMode={darkMode}
+        userAvatar={userSettings?.avatar}
+        userName={userSettings?.name}
+        userEmail={userSettings?.email}
+        onOpenSettings={handleOpenSettings}
+        onLogout={onLogout}
+        avatars={avatars}
+        setActiveTab={setActiveTab}
+        activeTab={activeTab}
+      />
+
       <SettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
@@ -653,7 +655,6 @@ const Dashboard = () => {
       {/* Reminder Modal at Dashboard Level */}
       <ReminderModal
         isOpen={showReminderModal}
-        // isOpen={true}
         onClose={handleReminderClose}
         notificationEmail={
           userSettings?.notificationEmail || userSettings?.email

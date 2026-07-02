@@ -459,15 +459,14 @@ textarea.form-input {
 
 .mobile-menu-wrapper {
   display: none;
-  position: relative;
 }
 
 .hamburger-button {
   background: none;
-  border: 1px solid var(--border-color);
+  border: none;
   border-radius: 8px;
   padding: 0.5rem;
-  color: var(--text-color);
+  color: var(--text-loght);
   font-size: 1.2rem;
   display: flex;
   align-items: center;
@@ -545,6 +544,23 @@ textarea.form-input {
   background: transparent;
 }
 
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.logo-title {
+  /* display: none; */
+  height: 40px;
+  margin-left: 10px;
+}
+
+.logo-icon {
+  display: none;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .cards-container {
@@ -562,7 +578,6 @@ textarea.form-input {
 
   .motivational-quote {
     font-size: 1.7rem !important;
-    color: red;
   }
 
   .plan-actions {
@@ -602,6 +617,18 @@ textarea.form-input {
 
   .header-actions {
     gap: 0.5rem;
+  }
+
+  .logo-title {
+    display: none;
+  }
+
+  .logo-icon {
+    display: block;
+    height: 30px;
+    width: 80px;
+    border-radius: 50%;
+    object-fit: cover;
   }
 
   .profile-popup-trigger .user-name {
@@ -742,6 +769,13 @@ textarea.form-input {
   max-width: 800px;
   text-align: center;
   overflow: hidden;
+  background: rgba(var(--bg-color-rgb), 0.4);
+  border-radius: 20px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  box-shadow: var(--shadow);
+  margin-top: 2rem;
+  padding: 0 2rem;
 }
 
 .motivational-quote {
@@ -753,7 +787,6 @@ textarea.form-input {
   font-size: 2.5rem;
   line-height: 1.5;
   transition: all 0.5s ease;
-  padding: 0 1rem;
 }
 
 /* Animation Styles */
