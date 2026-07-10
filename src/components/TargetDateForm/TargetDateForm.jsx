@@ -35,7 +35,7 @@ const TargetDateForm = ({
   };
 
   return (
-    <section className="card target-card">
+    <section className="target-card">
       <h2>Set Your Countdown</h2>
       <form onSubmit={handleSubmit} className="form-grid">
         <input

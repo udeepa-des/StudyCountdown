@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   opacity: 0;
@@ -72,9 +72,12 @@
   cursor: pointer;
   color: var(--text-color);
   margin-bottom: 1rem;
+  padding: 0 8px;
+  border-radius: 50%;
 }
 
 .close-button:hover {
+  background: var(--bg-color);
   color: var(--accent-color);
 }
 

@@ -7,7 +7,7 @@
   background: rgba(var(--card-bg), 0.95);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid var(--border-color-2);
   padding: 0.75rem 1.5rem;
   display: flex;
   flex-direction: column;
@@ -100,7 +100,7 @@
   padding: 0.5rem 1rem;
   border-radius: 20px;
   background: rgba(var(--bg-color-rgb), 0.4);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border-color-2);
   color: var(--text-color);
   font-size: 0.8rem;
   cursor: pointer;

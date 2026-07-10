@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./CountdownTimer.css";
 
 const CountdownTimer = ({
@@ -15,6 +15,17 @@ const CountdownTimer = ({
     minutes: 0,
     seconds: 0,
   });
+  const prevSeconds = useRef(timeLeft.seconds);
+  const [tick, setTick] = useState(false);
+
+  useEffect(() => {
+    if (prevSeconds.current !== timeLeft.seconds) {
+      setTick(true);
+      const t = setTimeout(() => setTick(false), 350);
+      prevSeconds.current = timeLeft.seconds;
+      return () => clearTimeout(t);
+    }
+  }, [timeLeft.seconds]);
 
   useEffect(() => {
     const parseCountdown = () => {
@@ -39,7 +50,7 @@ const CountdownTimer = ({
   }, [countdown]);
 
   const handleEdit = () => {
-    setIsEditing(true)
+    setIsEditing(true);
     setIsTargetSet(false);
   };
 
@@ -53,47 +64,8 @@ const CountdownTimer = ({
               {targetName ? targetName : "Target"}
             </span>
           </h2>
-          <div className="countdown-actions">
-            <button
-              onClick={handleEdit}
-              aria-label="Edit target date"
-              className="countdown-action-button edit"
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-              </svg>
-            </button>
-            <button
-              onClick={onDelete}
-              aria-label="Delete countdown"
-              className="countdown-action-button delete"
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M3 6h18" />
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-              </svg>
-            </button>
-          </div>
         </div>
+
         <div className="countdown-grid">
           <div className="countdown-card">
             <div className="countdown-value">{timeLeft.days}</div>
@@ -108,8 +80,45 @@ const CountdownTimer = ({
             <div className="countdown-label">Minutes</div>
           </div>
           <div className="countdown-card">
-            <div className="countdown-value seconds">{timeLeft.seconds}</div>
+            <div className={`countdown-value seconds ${tick ? "tick" : ""}`}>
+              {timeLeft.seconds}
+            </div>
             <div className="countdown-label">Seconds</div>
+          </div>
+
+          <div className="countdown-actions">
+            <button
+              onClick={handleEdit}
+              aria-label="Edit target date"
+              className="countdown-action-button edit"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="12" r="3" />
+                <path d="M12 3v2.5M12 18.5V21M21 12h-2.5M5.5 12H3M18.36 5.64l-1.77 1.77M7.41 16.59l-1.77 1.77M18.36 18.36l-1.77-1.77M7.41 7.41L5.64 5.64" />
+              </svg>
+            </button>
+            <button
+              onClick={onDelete}
+              aria-label="Delete countdown"
+              className="countdown-action-button delete"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 3v8" />
+                <path d="M7 5.5a8 8 0 1 0 10 0" />
+              </svg>
+            </button>
           </div>
         </div>
       </section>

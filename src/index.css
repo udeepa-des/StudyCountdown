@@ -10,7 +10,8 @@
   --text-light: #8d99ae;
   --bg-color: #ebe8e2;
   --card-bg: #ffffff;
-  --border-color: #585858;
+  --border-color: #ebebeb;
+  --border-color-2: #535353;
   --shadow: 0 4px 6px rgba(12, 12, 12, 0.493);
   --hover-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
   --primary-color-rgb: 67, 97, 238;
@@ -190,7 +191,7 @@ select {
   justify-content: space-between;
   align-items: center;
   /* margin-bottom: 2rem; */
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color-2);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -211,7 +212,7 @@ select {
 .cards-container {
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* Two columns of equal width */
-  gap: 1.5rem; /* Space between cards */
+  gap: 12px;
   margin-bottom: 1.5rem;
 }
 
@@ -220,7 +221,7 @@ select {
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: var(--shadow);
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease;
@@ -419,7 +420,7 @@ textarea.form-input {
 .tabs-container {
   display: flex;
   /* margin-right: 10px; */
-  gap: 2px;
+  gap: 10px;
   /* border-bottom: 1px solid #ccc; */
 }
 
@@ -438,7 +439,7 @@ textarea.form-input {
   color: #ffffffb6;
   background: rgba(var(--primary-color-rgb), 0.1);
   /* border-radius: 20px 20px 0 0; */
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border-color-2);
 }
 
 .tab-button.active {
@@ -448,7 +449,7 @@ textarea.form-input {
   backdrop-filter: blur(50px);
   -webkit-backdrop-filter: blur(50px);
   background: rgba(var(--primary-color-rgb), 0.2);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border-color-2);
   /* margin: -20px 0; */
   /* padding-bottom: 0; */
 }
@@ -573,7 +574,7 @@ textarea.form-input {
 
   .motivational-container {
     height: 130px !important;
-    margin: 0 auto 0 !important;
+    margin: 0 0 12px 0 !important;
   }
 
   .motivational-quote {
@@ -671,17 +672,6 @@ textarea.form-input {
   background-color: var(--border-color);
 }
 
-/* Card Background Images */
-/* .card {
-  position: relative;
-  overflow: hidden;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  z-index: 1;
-  background-color: rgba(var(--card-bg-rgb), 0.9);
-} */
-
 @supports (backdrop-filter: blur(16px)) or (-webkit-backdrop-filter: blur(16px)) {
   .card {
     background-color: rgba(var(--card-bg-rgb), 0.7);
@@ -707,7 +697,7 @@ textarea.form-input {
 }
 
 /* Specific card backgrounds */
-.target-date-card {
+/* .target-date-card {
   background: rgba(var(--card-bg-rgb), 0.7);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -715,22 +705,10 @@ textarea.form-input {
   padding: 1.5rem 0.5rem;
   box-shadow: var(--shadow);
   border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.countdown-card-bg {
-  background-image: url("./assets/backgrounds/countdown-bg.png");
-}
+} */
 
 .study-plan-form-card {
   background-image: url("./assets/backgrounds/study-plan.jpg");
-}
-
-.study-plan-list-card {
-  background-image: url("./assets/backgrounds/study-plan-bg.jpg");
-}
-
-.sound-player-card {
-  background-image: url("./assets/backgrounds/soundwaves-bg.jpg");
 }
 
 /* Ensure content is readable */
@@ -747,16 +725,16 @@ textarea.form-input {
 }
 
 .motivational-quote {
-  font-family: "Lavishly Yours", cursive !important;
+  font-family: "Lavishly Yours", cursive;
   position: absolute;
   width: 100%;
   font-style: italic;
-  color: var(--text-light);
+  color: var(--text-color);
   margin-top: 0.5rem;
-  font-size: 1rem;
   max-width: 600px;
   line-height: 1.5;
   transition: all 0.5s ease;
+  font-size: 2.5rem;
 }
 
 /* Motivational Quote Container */
@@ -776,17 +754,6 @@ textarea.form-input {
   box-shadow: var(--shadow);
   margin-top: 2rem;
   padding: 0 2rem;
-}
-
-.motivational-quote {
-  font-family: Italianno;
-  position: absolute;
-  width: 100%;
-  font-style: italic;
-  color: var(--text-light);
-  font-size: 2.5rem;
-  line-height: 1.5;
-  transition: all 0.5s ease;
 }
 
 /* Animation Styles */

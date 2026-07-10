@@ -6,16 +6,45 @@
   justify-content: center;
   align-items: center;
   z-index: 9999;
-
+  flex-direction: column;
+  gap: 20px;
   animation: fadeIn 0.4s ease;
 }
 
 .splash-logo {
-  width: 380px;
+  width: 300px;
   animation:
     logoAppear 0.8s ease,
     logoFloat 2s ease-in-out infinite;
 }
+
+.loader {
+  width: fit-content;
+  padding-bottom: 5px;
+  font-weight: bold;
+  font-family: monospace;
+  font-size: 30px;
+  overflow: hidden;
+  white-space: nowrap;
+  color: #00000000;
+  text-shadow: 0 0 0 #e7e7e7, var(--shadow-offset) 0 0 #f0f0f0;
+  background: linear-gradient(var(--primary-color) 0 0) bottom left/0% 3px no-repeat;
+  animation: l14 1.5s infinite;
+  margin-top: 20px;
+}
+.loader:before {
+  content: attr(data-text);
+}
+@keyframes l14 {
+  80% {
+    text-shadow: 0 0 0 #838383, var(--shadow-offset) 0 0 #999999;
+    background-size: 100% 3px;
+  }
+  100% {
+    text-shadow: calc(-1 * var(--shadow-offset)) 0 0 #a8a8a8, 0 0 0 #afafaf;
+  }
+}
+
 
 @keyframes logoAppear {
   from {

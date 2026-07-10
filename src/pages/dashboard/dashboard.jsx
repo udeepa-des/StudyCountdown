@@ -31,6 +31,7 @@ import Background2 from "../../assets/backgrounds/bg2.jpg";
 import Background3 from "../../assets/backgrounds/bg3.jpg";
 import Background4 from "../../assets/backgrounds/bg4.png";
 import Background5 from "../../assets/backgrounds/login-bg.jpg";
+import Background6 from "../../assets/backgrounds/study-plan.jpg";
 import LogoIcon from "../../assets/logo/logo.png";
 import LogoTitle from "../../assets/logo/logo_title.png";
 import SplashScreen from "../../components/SplashScreen/SplashScreen";
@@ -142,6 +143,7 @@ const Dashboard = () => {
     { id: "bg3", name: "LoFi Hangout", src: Background3 },
     { id: "bg4", name: "Golden Hour Study", src: Background4 },
     { id: "bg5", name: "Rainy Retreat", src: Background5 },
+    { id: "bg6", name: "Study Haven", src: Background6 },
   ];
 
   useEffect(() => {
@@ -516,7 +518,7 @@ const Dashboard = () => {
           <div className="cards-container">
             {activeTab === "countdown" && (
               <>
-                <div className="full-width-card">
+                <div className="card">
                   <div
                     className={`${
                       isTargetSet ? "target-date-card" : "target-form-card"
@@ -551,7 +553,7 @@ const Dashboard = () => {
             )}
 
             {/* Reminder Card - Separate from Countdown */}
-            <div className="full-width-card">
+            <div className="card" style={{ display: activeTab === "plans" ? "none" : "" }}>
               <Reminder
                 shouldDisplay={activeTab === "countdown"}
                 darkMode={darkMode}
