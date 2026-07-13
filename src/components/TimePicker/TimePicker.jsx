@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import "./Timepicker.css";
+import "./TimePicker.css";
 
 const HOURS = Array.from({ length: 12 }, (_, i) => i + 1); // 1-12
 const MINUTES = Array.from({ length: 12 }, (_, i) => i * 5); // 0,5,...55
