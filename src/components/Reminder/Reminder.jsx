@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import axios from "axios";
 import Select from "../Select/Select";
-import CalendarPicker from "../CalenderPicker/CalendarPicker";
+import CalendarPicker from "../CalenderPicker/Calendarpicker";
 import TimePicker from "../TimePicker/TimePicker";
 import "./Reminder.css";
 
