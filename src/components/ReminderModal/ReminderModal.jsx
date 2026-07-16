@@ -110,7 +110,6 @@ const ReminderModal = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="reminder-modal-header">
-          <div className="reminder-modal-icon">⏰</div>
           <h2>Reminder Alert!</h2>
           <button className="reminder-modal-close" onClick={onClose}>
             &times;

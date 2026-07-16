@@ -38,6 +38,7 @@ import SplashScreen from "../../components/SplashScreen/SplashScreen";
 import ConfirmationPopup from "../../components/ConfirmationPopup/ConfirmationPopup";
 import StudyPlanDetailModal from "../../components/StudyPlans/StudyPlanDetailModal/StudyPlanDetailModal";
 import { getDateAtMidnight } from "../../utils/getDateAtMidnight";
+import { getAdvanceMs } from "../../utils/reminderUtils";
 import toast from "react-hot-toast";
 
 axios.defaults.baseURL =
@@ -104,6 +105,14 @@ const Dashboard = () => {
   const [showReminderModal, setShowReminderModal] = useState(false);
   const [reminderData, setReminderData] = useState(null);
   const [reminderTriggered, setReminderTriggered] = useState(false);
+  const [reminders, setReminders] = useState([]);
+  const [remindersLoading, setRemindersLoading] = useState(false);
+
+  const [showDeletePlanDialog, setShowDeletePlanDialog] = useState(false);
+  const [planToDelete, setPlanToDelete] = useState(null);
+  const [showDeleteReminderDialog, setShowDeleteReminderDialog] =
+    useState(false);
+  const [reminderToDelete, setReminderToDelete] = useState(null);
 
   const motivationalQuotes = [
     "The future belongs to those who believe in the beauty of their dreams. - Eleanor Roosevelt",
@@ -117,7 +126,6 @@ const Dashboard = () => {
   const [currentQuote, setCurrentQuote] = useState(motivationalQuotes[0]);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  const reminderSnoozeRef = useRef(null);
   const quoteRef = useRef();
 
   const avatars = [
@@ -382,13 +390,217 @@ const Dashboard = () => {
     }
   };
 
-  const handleDeletePlan = async (planId) => {
+  const handleDeletePlan = (planId) => {
+    setPlanToDelete(planId);
+    setShowDeletePlanDialog(true);
+  };
+
+  const confirmDeletePlan = async () => {
+    if (!planToDelete) return;
+
+    setIsDeleting(true);
     try {
-      await axios.delete(`/api/plans/${planId}`);
-      setPlans((prevPlans) => prevPlans.filter((p) => p._id !== planId));
+      await axios.delete(`/api/plans/${planToDelete}`);
+      setPlans((prevPlans) => prevPlans.filter((p) => p._id !== planToDelete));
+      toast.success("Study plan deleted successfully");
     } catch (error) {
       console.error("Error deleting plan:", error);
+      toast.error("Something went wrong when deleting the plan");
+    } finally {
+      setIsDeleting(false);
+      setShowDeletePlanDialog(false);
+      setPlanToDelete(null);
     }
+  };
+
+  const handleCancelDeletePlan = () => {
+    setShowDeletePlanDialog(false);
+    setPlanToDelete(null);
+  };
+
+  const handleDeleteReminderWithConfirm = (reminderId) => {
+    setReminderToDelete(reminderId);
+    setShowDeleteReminderDialog(true);
+  };
+
+  const confirmDeleteReminder = async () => {
+    if (!reminderToDelete) return;
+
+    setIsDeleting(true);
+    try {
+      await handleDeleteReminder(reminderToDelete);
+      toast.success("Reminder deleted successfully");
+    } catch (error) {
+      console.error("Error deleting reminder:", error);
+      toast.error("Something went wrong when deleting the reminder");
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteReminderDialog(false);
+      setReminderToDelete(null);
+    }
+  };
+
+  const handleCancelDeleteReminder = () => {
+    setShowDeleteReminderDialog(false);
+    setReminderToDelete(null);
+  };
+
+  const fetchReminders = async () => {
+    setRemindersLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get("/api/reminders", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setReminders(response.data || []);
+    } catch (error) {
+      console.error("Error fetching reminders:", error);
+      const savedReminders = localStorage.getItem("userReminders");
+      if (savedReminders) {
+        setReminders(JSON.parse(savedReminders));
+      }
+    } finally {
+      setRemindersLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchReminders();
+  }, []);
+
+  const saveRemindersToAPI = async (updatedReminders) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.post(
+        "/api/reminders",
+        { reminders: updatedReminders },
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+      localStorage.setItem("userReminders", JSON.stringify(updatedReminders));
+    } catch (error) {
+      console.error("Error saving reminders:", error);
+      localStorage.setItem("userReminders", JSON.stringify(updatedReminders));
+    }
+  };
+
+  const buildReminderPayload = (reminder) => ({
+    id: reminder.id,
+    label: reminder.label,
+    date: reminder.date,
+    time: reminder.time,
+    targetName: targetName || reminder.label,
+    targetDate: reminder.date,
+    reminderTime: `${reminder.advanceNotice} ${reminder.advanceUnit} before`,
+    notificationEmail: userSettings.notificationEmail,
+    phone: userSettings.phone,
+    reminder,
+  });
+
+  // Check reminders every 30 seconds
+  // useEffect(() => {
+  //   const checkReminders = () => {
+  //     const now = new Date();
+  //     let hasChanges = false;
+
+  //     const updatedReminders = reminders.map((reminder) => {
+  //       if (!reminder.isActive) return reminder;
+
+  //       let updated = { ...reminder };
+
+  //       if (updated.snoozedUntil) {
+  //         const snoozeEnd = new Date(updated.snoozedUntil);
+  //         if (now >= snoozeEnd) {
+  //           updated.snoozedUntil = null;
+  //           updated.triggered = true;
+  //           hasChanges = true;
+  //           handleReminderTrigger(buildReminderPayload(updated));
+  //           return updated;
+  //         }
+  //         return updated;
+  //       }
+
+  //       if (updated.triggered) return updated;
+
+  //       const advanceMs = getAdvanceMs(updated);
+  //       const reminderDateTime = new Date(`${updated.date}T${updated.time}`);
+  //       const triggerTime = new Date(reminderDateTime.getTime() - advanceMs);
+  //       const timeDiff = now - triggerTime;
+
+  //       if (timeDiff >= 0 && timeDiff < 90000) {
+  //         updated.triggered = true;
+  //         hasChanges = true;
+  //         handleReminderTrigger(buildReminderPayload(updated));
+  //       }
+
+  //       return updated;
+  //     });
+
+  //     if (hasChanges) {
+  //       setReminders(updatedReminders);
+  //       saveRemindersToAPI(updatedReminders);
+  //     }
+  //   };
+
+  //   const interval = setInterval(checkReminders, 30000);
+  //   checkReminders();
+  //   return () => clearInterval(interval);
+  // }, [reminders]);
+
+  const handleAddReminderSubmit = async (newReminderInput) => {
+    const reminderDateTime = new Date(
+      `${newReminderInput.date}T${newReminderInput.time}`,
+    ); // parsed correctly here, in the browser's own local time
+    const advanceMs = getAdvanceMs(newReminderInput);
+    const triggerAt = new Date(
+      reminderDateTime.getTime() - advanceMs,
+    ).toISOString();
+
+    const reminder = {
+      id: Date.now().toString(),
+      ...newReminderInput,
+      isActive: true,
+      triggered: false,
+      snoozedUntil: null,
+      triggerAt,
+      createdAt: new Date().toISOString(),
+    };
+    const updatedReminders = [...reminders, reminder];
+    setReminders(updatedReminders);
+    await saveRemindersToAPI(updatedReminders);
+  };
+
+  const handleToggleReminder = async (id) => {
+    const reminder = reminders.find((r) => r.id === id);
+    if (!reminder || reminder.triggered) return;
+
+    const updatedReminders = reminders.map((r) =>
+      r.id === id ? { ...r, isActive: !r.isActive, snoozedUntil: null } : r,
+    );
+    setReminders(updatedReminders);
+    await saveRemindersToAPI(updatedReminders);
+  };
+
+  const handleDeleteReminder = async (id) => {
+    const updatedReminders = reminders.filter((r) => r.id !== id);
+    setReminders(updatedReminders);
+    await saveRemindersToAPI(updatedReminders);
+  };
+
+  const handleSnoozeReminder = (id) => {
+    setReminders((prev) => {
+      const updated = prev.map((r) => {
+        if (r.id !== id) return r;
+        const snoozeUntil = new Date();
+        snoozeUntil.setMinutes(snoozeUntil.getMinutes() + 5);
+        return {
+          ...r,
+          snoozedUntil: snoozeUntil.toISOString(),
+          triggered: false,
+        };
+      });
+      saveRemindersToAPI(updated);
+      return updated;
+    });
   };
 
   // Reminder handlers
@@ -423,8 +635,8 @@ const Dashboard = () => {
   const handleReminderSnooze = (reminderId) => {
     toast.success("Reminder snoozed for 5 minutes");
     setShowReminderModal(false);
-    if (reminderSnoozeRef.current && reminderId) {
-      reminderSnoozeRef.current(reminderId);
+    if (reminderId) {
+      handleSnoozeReminder(reminderId);
     }
   };
 
@@ -553,18 +765,18 @@ const Dashboard = () => {
             )}
 
             {/* Reminder Card - Separate from Countdown */}
-            <div className="card" style={{ display: activeTab === "plans" ? "none" : "" }}>
+            <div
+              className="card"
+              style={{ display: activeTab === "plans" ? "none" : "" }}
+            >
               <Reminder
                 shouldDisplay={activeTab === "countdown"}
                 darkMode={darkMode}
-                onReminderTrigger={handleReminderTrigger}
-                onSnoozeReady={(fn) => {
-                  reminderSnoozeRef.current = fn;
-                }}
-                targetName={targetName}
-                targetDate={targetDate}
-                email={userSettings.notificationEmail}
-                phone={userSettings.phone}
+                reminders={reminders}
+                loading={remindersLoading}
+                onAddReminder={handleAddReminderSubmit}
+                onToggleReminder={handleToggleReminder}
+                onDeleteReminder={handleDeleteReminderWithConfirm}
               />
             </div>
 
@@ -639,6 +851,30 @@ const Dashboard = () => {
         message="Are you sure you want to delete this countdown?"
         onConfirm={handleDeleteCountdown}
         onCancel={handleCancelDelete}
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        confirmVariant="danger"
+        loading={isDeleting}
+        loadingLabel="Deleting..."
+      />
+
+      <ConfirmationPopup
+        isOpen={showDeletePlanDialog}
+        message="Are you sure you want to delete this study plan?"
+        onConfirm={confirmDeletePlan}
+        onCancel={handleCancelDeletePlan}
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        confirmVariant="danger"
+        loading={isDeleting}
+        loadingLabel="Deleting..."
+      />
+
+      <ConfirmationPopup
+        isOpen={showDeleteReminderDialog}
+        message="Are you sure you want to delete this reminder?"
+        onConfirm={confirmDeleteReminder}
+        onCancel={handleCancelDeleteReminder}
         confirmLabel="Delete"
         cancelLabel="Cancel"
         confirmVariant="danger"
