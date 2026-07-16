@@ -547,12 +547,12 @@ const Dashboard = () => {
   // }, [reminders]);
 
   const handleAddReminderSubmit = async (newReminderInput) => {
-    const reminderDateTime = new Date(
+    const eventDateTime = new Date(
       `${newReminderInput.date}T${newReminderInput.time}`,
-    ); // parsed correctly here, in the browser's own local time
+    ); // parsed correctly here, in the browser's real local timezone
     const advanceMs = getAdvanceMs(newReminderInput);
     const triggerAt = new Date(
-      reminderDateTime.getTime() - advanceMs,
+      eventDateTime.getTime() - advanceMs,
     ).toISOString();
 
     const reminder = {
@@ -562,6 +562,8 @@ const Dashboard = () => {
       triggered: false,
       snoozedUntil: null,
       triggerAt,
+      eventAt: eventDateTime.toISOString(),
+      displayDateTime: eventDateTime.toLocaleString(),
       createdAt: new Date().toISOString(),
     };
     const updatedReminders = [...reminders, reminder];
