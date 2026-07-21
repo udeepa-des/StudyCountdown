@@ -8,14 +8,15 @@
 }
 
 .add-reminder-btn-text {
-  background: var(--primary-color);
+  background: transparent;
   color: #fff;
   padding: 8px 12px;
-  border: none;
+  border: 1px solid;
+  border-color: var(--border-color-2);
   height: 38px;
-  width: 150px;
+  width: 38px;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 2rem;
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
@@ -25,6 +26,37 @@
 
 .add-reminder-btn-text:hover {
   background-color: var(--button-hover);
+}
+
+.select-reminder-btn-text {
+  background: rgba(var(--bg-color-rgb), 0.4);
+  border-radius: 8px;
+  padding: 0 16px;
+  border: 1px solid;
+  border-color: var(--border-color-2);
+  color: var(--text-color);
+  height: 38px;
+}
+
+.select-reminder-btn-text:hover {
+  color: var(--text-color);
+  background: rgba(var(--bg-color), 0.8);
+}
+
+.delete-reminder-select-all-btn {
+  background: rgba(var(--bg-color-rgb), 0.4);
+  border-radius: 8px;
+  padding: 0 8px;
+  border: 1px solid;
+  border-color: var(--border-color-2);
+  color: var(--text-color);
+  height: 28px;
+  font-size: 0.7em;
+}
+
+.delete-reminder-select-all-btn:hover {
+  color: var(--text-color);
+  background: rgba(var(--bg-color), 0.8);
 }
 
 /* Reminders List */

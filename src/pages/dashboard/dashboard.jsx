@@ -37,6 +37,7 @@ import LogoTitle from "../../assets/logo/logo_title.png";
 import SplashScreen from "../../components/SplashScreen/SplashScreen";
 import ConfirmationPopup from "../../components/ConfirmationPopup/ConfirmationPopup";
 import StudyPlanDetailModal from "../../components/StudyPlans/StudyPlanDetailModal/StudyPlanDetailModal";
+import TodoWidget from "../../components/Todo/TodoWidget";
 import { getDateAtMidnight } from "../../utils/getDateAtMidnight";
 import { getAdvanceMs } from "../../utils/reminderUtils";
 import toast from "react-hot-toast";
@@ -75,6 +76,7 @@ const Dashboard = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [targetDate, setTargetDate] = useState("");
   const [targetName, setTargetName] = useState("");
+  const [todos, setTodos] = useState("");
   const [countdown, setCountdown] = useState("");
   const [plans, setPlans] = useState([]);
   const [email, setEmail] = useState("");
@@ -125,8 +127,11 @@ const Dashboard = () => {
 
   const [currentQuote, setCurrentQuote] = useState(motivationalQuotes[0]);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
+  const [idsToDelete, setIdsToDelete] = useState([]);
 
   const quoteRef = useRef();
+  const previousRemindersRef = useRef(null);
 
   const avatars = [
     { id: "Astronaut", src: Astronaut },
@@ -160,6 +165,34 @@ const Dashboard = () => {
       navigate("/");
     }
   }, [navigate]);
+
+  const handleBulkDeleteReminders = (ids) => {
+    setIdsToDelete(ids);
+    setShowBulkDeleteDialog(true);
+  };
+
+  const confirmBulkDeleteReminders = async () => {
+    setIsDeleting(true);
+    try {
+      const idSet = new Set(idsToDelete);
+      const updatedReminders = reminders.filter((r) => !idSet.has(r.id));
+      setReminders(updatedReminders);
+      await saveRemindersToAPI(updatedReminders);
+      toast.success(`${idsToDelete.length} reminder(s) deleted successfully`);
+    } catch (error) {
+      console.error("Error bulk deleting reminders:", error);
+      toast.error("Something went wrong when deleting reminders");
+    } finally {
+      setIsDeleting(false);
+      setShowBulkDeleteDialog(false);
+      setIdsToDelete([]);
+    }
+  };
+
+  const handleCancelBulkDelete = () => {
+    setShowBulkDeleteDialog(false);
+    setIdsToDelete([]);
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -203,6 +236,9 @@ const Dashboard = () => {
         }
         if (response.data.studyPlans) {
           setPlans(response.data.studyPlans || []);
+        }
+        if (response.data.todos) {
+          setTodos(response.data.todos);
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -452,7 +488,48 @@ const Dashboard = () => {
       const response = await axios.get("/api/reminders", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setReminders(response.data || []);
+      const fetched = response.data || [];
+
+      // Skip diffing on the very first fetch — we only want to react to
+      // reminders that flip to triggered *during* this session, not ones
+      // that were already triggered before the tab was opened.
+      if (previousRemindersRef.current !== null) {
+        try {
+          const prevById = new Map(
+            previousRemindersRef.current.map((r) => [r.id, r]),
+          );
+
+          const newlyTriggered = fetched.find((r) => {
+            const prev = prevById.get(r.id);
+            return r.triggered && (!prev || !prev.triggered);
+          });
+
+          if (newlyTriggered) {
+            setReminderData({
+              id: newlyTriggered.id,
+              label: newlyTriggered.label,
+              date: newlyTriggered.date,
+              time: newlyTriggered.time,
+              targetName: targetName || newlyTriggered.label,
+              targetDate: newlyTriggered.date,
+              displayDateTime:
+                newlyTriggered.displayDateTime ||
+                formatDateTime(newlyTriggered.date, newlyTriggered.time),
+              reminderTime: `${newlyTriggered.advanceNotice} ${newlyTriggered.advanceUnit} before`,
+              notificationEmail: userSettings.notificationEmail,
+              phone: userSettings.phone,
+              reminder: newlyTriggered,
+            });
+            setShowReminderModal(true);
+          }
+        } catch (diffError) {
+          console.error("Error detecting newly-triggered reminder:", diffError);
+          toast.success("Error detecting newly-triggered reminder");
+        }
+      }
+
+      previousRemindersRef.current = fetched;
+      setReminders(fetched);
     } catch (error) {
       console.error("Error fetching reminders:", error);
       const savedReminders = localStorage.getItem("userReminders");
@@ -464,8 +541,33 @@ const Dashboard = () => {
     }
   };
 
+  const formatDateTime = (date, time) => {
+    if (!date) return "Not set";
+    try {
+      return new Date(`${date}T${time}`).toLocaleString();
+    } catch {
+      return `${date} ${time}`;
+    }
+  };
+
   useEffect(() => {
-    fetchReminders();
+    fetchReminders(); // initial load, sets the baseline snapshot
+
+    const pollInterval = setInterval(fetchReminders, 20000); // check every 20s
+
+    // Also refresh immediately when the user comes back to the tab —
+    // catches anything that triggered while they were away.
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") {
+        fetchReminders();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    return () => {
+      clearInterval(pollInterval);
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
   }, []);
 
   const saveRemindersToAPI = async (updatedReminders) => {
@@ -605,33 +707,9 @@ const Dashboard = () => {
     });
   };
 
-  // Reminder handlers
-  const handleReminderTrigger = async (data) => {
+  const handleReminderTrigger = (data) => {
     setReminderData(data);
     setShowReminderModal(true);
-
-    // Send notifications to backend
-    try {
-      const token = localStorage.getItem("token");
-      await axios.post(
-        "/api/send-reminder",
-        {
-          reminderId: data.id,
-          label: data.label,
-          targetName: data.targetName,
-          targetDate: data.date,
-          reminderTime: data.reminderTime,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-    } catch (error) {
-      console.error("Error sending reminder:", error);
-      toast.error("Failed to send reminder notification");
-    }
   };
 
   const handleReminderSnooze = (reminderId) => {
@@ -705,6 +783,12 @@ const Dashboard = () => {
             >
               Study Plans
             </button>
+            <button
+              className={`tab-button ${activeTab === "todos" ? "active" : ""}`}
+              onClick={() => setActiveTab("todos")}
+            >
+              Todo
+            </button>
           </div>
 
           <ProfilePopup
@@ -769,7 +853,10 @@ const Dashboard = () => {
             {/* Reminder Card - Separate from Countdown */}
             <div
               className="card"
-              style={{ display: activeTab === "plans" ? "none" : "" }}
+              style={{
+                display:
+                  activeTab === "plans" || activeTab === "todos" ? "none" : "",
+              }}
             >
               <Reminder
                 shouldDisplay={activeTab === "countdown"}
@@ -779,6 +866,7 @@ const Dashboard = () => {
                 onAddReminder={handleAddReminderSubmit}
                 onToggleReminder={handleToggleReminder}
                 onDeleteReminder={handleDeleteReminderWithConfirm}
+                onBulkDeleteReminders={handleBulkDeleteReminders}
               />
             </div>
 
@@ -796,6 +884,8 @@ const Dashboard = () => {
                 />
               </>
             )}
+
+            {activeTab === "todos" && <TodoWidget />}
           </div>
         </div>
       </div>
@@ -877,6 +967,18 @@ const Dashboard = () => {
         message="Are you sure you want to delete this reminder?"
         onConfirm={confirmDeleteReminder}
         onCancel={handleCancelDeleteReminder}
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        confirmVariant="danger"
+        loading={isDeleting}
+        loadingLabel="Deleting..."
+      />
+
+      <ConfirmationPopup
+        isOpen={showBulkDeleteDialog}
+        message={`Are you sure you want to delete ${idsToDelete.length} ${idsToDelete.length > 1 ? "reminders" : "reminder"}?`}
+        onConfirm={confirmBulkDeleteReminders}
+        onCancel={handleCancelBulkDelete}
         confirmLabel="Delete"
         cancelLabel="Cancel"
         confirmVariant="danger"

@@ -1,7 +1,7 @@
 .splash-screen {
   position: fixed;
   inset: 0;
-  background: white;
+  background: var(--bg-color);
   display: flex;
   justify-content: center;
   align-items: center;

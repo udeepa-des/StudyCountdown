@@ -15,6 +15,7 @@ const Reminder = ({
   onAddReminder,
   onToggleReminder,
   onDeleteReminder,
+  onBulkDeleteReminders, // NEW: (ids: string[]) => void
 }) => {
   const [newReminder, setNewReminder] = useState({
     label: "",
@@ -26,6 +27,10 @@ const Reminder = ({
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [, forceTick] = useState(0);
+
+  // NEW: selection state
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState(new Set());
 
   // Re-render every second so status text (countdowns, snooze timers) stays live
   useEffect(() => {
@@ -118,6 +123,36 @@ const Reminder = ({
     }
   };
 
+  // NEW: selection helpers
+  const toggleSelectionMode = () => {
+    setSelectionMode((prev) => !prev);
+    setSelectedIds(new Set()); // always reset when entering/exiting
+  };
+
+  const toggleSelectOne = (id) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const handleSelectAll = () => {
+    setSelectedIds(new Set(reminders.map((r) => r.id)));
+  };
+
+  const handleDeselectAll = () => {
+    setSelectedIds(new Set());
+  };
+
+  const handleBulkDeleteClick = () => {
+    if (selectedIds.size === 0) return;
+    onBulkDeleteReminders?.(Array.from(selectedIds));
+    setSelectedIds(new Set());
+    setSelectionMode(false);
+  };
+
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
 
@@ -127,27 +162,100 @@ const Reminder = ({
         <div className="reminder-card">
           <div className="reminder-header">
             <h2>Reminders</h2>
-            <button
-              type="button"
-              className="add-reminder-btn-text"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsModalOpen(true);
-              }}
-            >
-              Add Reminders
-            </button>
+            <div style={{ display: "flex", gap: "8px" }}>
+              {reminders.length > 0 && (
+                <button
+                  type="button"
+                  className="select-reminder-btn-text"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleSelectionMode();
+                  }}
+                >
+                  {selectionMode ? "Cancel" : "Select"}
+                </button>
+              )}
+              <button
+                type="button"
+                className="add-reminder-btn-text"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsModalOpen(true);
+                }}
+              >
+                +
+              </button>
+            </div>
           </div>
 
+          {/* NEW: selection toolbar */}
+          {selectionMode && (
+            <div
+              className="reminder-selection-toolbar"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                flexWrap: "wrap",
+                padding: "8px 0",
+              }}
+            >
+              <span style={{ fontSize: "13px", opacity: 0.8 }}>
+                {selectedIds.size} selected
+              </span>
+
+              {selectedIds.size >= 1 && (
+                <button
+                  type="button"
+                  className="delete-reminder-select-all-btn"
+                  onClick={handleSelectAll}
+                >
+                  Select All
+                </button>
+              )}
+
+              {selectedIds.size > 1 && (
+                <button
+                  type="button"
+                  className="delete-reminder-select-all-btn"
+                  onClick={handleDeselectAll}
+                >
+                  Deselect All
+                </button>
+              )}
+
+              {selectedIds.size >= 1 && (
+                <button
+                  type="button"
+                  className="raction-btn raction-btn-delete"
+                  onClick={handleBulkDeleteClick}
+                >
+                  <svg
+                    className="raction-icon"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"
+                      strokeWidth="2"
+                    />
+                  </svg>{" "}
+                  ({selectedIds.size})
+                </button>
+              )}
+            </div>
+          )}
+
           <div className="reminder-content">
-            {loading && (
+            {/* {loading && (
               <div className="loading-spinner">Loading reminders...</div>
-            )}
+            )} */}
 
             <div className="reminders-list">
               {reminders.length === 0 ? (
                 <p className="no-reminders">
-                  No reminders set. Click Add Reminders to add one.
+                  No reminders set. Click + to add one.
                 </p>
               ) : (
                 reminders.map((reminder) => (
@@ -156,7 +264,23 @@ const Reminder = ({
                     className={`reminder-item status-${getStatusClass(reminder)}`}
                   >
                     <div className="reminder-card-top">
-                      <div className="reminder-title-row">
+                      <div
+                        className="reminder-title-row"
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "10px",
+                        }}
+                      >
+                        {/* NEW: checkbox, only in selection mode */}
+                        {selectionMode && (
+                          <input
+                            type="checkbox"
+                            checked={selectedIds.has(reminder.id)}
+                            onChange={() => toggleSelectOne(reminder.id)}
+                            aria-label={`Select ${reminder.label}`}
+                          />
+                        )}
                         <h3 className="reminder-title">{reminder.label}</h3>
                         <span
                           className={`reminder-status-badge status-${getStatusClass(reminder)}`}
@@ -164,51 +288,53 @@ const Reminder = ({
                           {getReminderStatus(reminder)}
                         </span>
                       </div>
-                      <div className="reminder-actions-header">
-                        <button
-                          onClick={() => onToggleReminder(reminder.id)}
-                          disabled={reminder.triggered}
-                          className={`raction-btn ${reminder.isActive ? "raction-btn-active" : "raction-btn-muted"}`}
-                          title={
-                            reminder.triggered
-                              ? "Already triggered — cannot change active status"
-                              : reminder.isActive
-                                ? "Deactivate"
-                                : "Activate"
-                          }
-                        >
-                          <svg
-                            className="raction-icon"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
+                      {!selectionMode && (
+                        <div className="reminder-actions-header">
+                          <button
+                            onClick={() => onToggleReminder(reminder.id)}
+                            disabled={reminder.triggered}
+                            className={`raction-btn ${reminder.isActive ? "raction-btn-active" : "raction-btn-muted"}`}
+                            title={
+                              reminder.triggered
+                                ? "Already triggered — cannot change active status"
+                                : reminder.isActive
+                                  ? "Deactivate"
+                                  : "Activate"
+                            }
                           >
-                            <path
-                              d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </button>
-                        <button
-                          onClick={() => onDeleteReminder(reminder.id)}
-                          className="raction-btn raction-btn-delete"
-                          title="Delete reminder"
-                        >
-                          <svg
-                            className="raction-icon"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
+                            <svg
+                              className="raction-icon"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </button>
+                          <button
+                            onClick={() => onDeleteReminder(reminder.id)}
+                            className="raction-btn raction-btn-delete"
+                            title="Delete reminder"
                           >
-                            <path
-                              d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"
-                              strokeWidth="2"
-                            />
-                          </svg>
-                        </button>
-                      </div>
+                            <svg
+                              className="raction-icon"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"
+                                strokeWidth="2"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      )}
                     </div>
 
                     <div className="reminder-stats-row">

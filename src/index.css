@@ -11,14 +11,13 @@
   --bg-color: #ebe8e2;
   --card-bg: #ffffff;
   --border-color: #ebebeb;
-  --border-color-2: #535353;
-  --shadow: 0 4px 6px rgba(12, 12, 12, 0.493);
-  --hover-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+  --border-color-2: #e2e2e2;
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  --hover-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
   --primary-color-rgb: 67, 97, 238;
   --card-bg-rgb: 255, 255, 255;
   --bg-color-rgb: 248, 249, 250;
-  --bar-shadow:
-    rgba(17, 17, 26, 0.05) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
+  --bar-shadow: 0 2px 12px rgba(17, 17, 26, 0.05);
 
   /* Dark Theme */
   --dark-primary: #3a86ff;
@@ -30,33 +29,14 @@
   --dark-bg: #121212;
   --dark-card-bg: #1e1e1e;
   --dark-border: #333333;
-  --dark-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  --dark-hover-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
+  --border-color-2: #202020;
+  --dark-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+  --dark-hover-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
   --dark-card-bg-rgb: 30, 30, 30;
   --dark-bg-rgb: 18, 18, 18;
 
-  --shadow-color: 0deg 0% 0%;
-  --shadow-elevation-low:
-    -1px -0.2px 1.1px hsl(var(--shadow-color) / 0.37),
-    -1.7px -0.3px 1.9px -1.2px hsl(var(--shadow-color) / 0.37),
-    -4.2px -0.8px 4.8px -2.5px hsl(var(--shadow-color) / 0.37);
-  --shadow-elevation-medium:
-    -1px -0.2px 1.1px hsl(var(--shadow-color) / 0.31),
-    -2.7px -0.5px 3.1px -0.6px hsl(var(--shadow-color) / 0.31),
-    -5.3px -1px 6.1px -1.2px hsl(var(--shadow-color) / 0.31),
-    -10.7px -2.1px 12.3px -1.9px hsl(var(--shadow-color) / 0.31),
-    -20.8px -4px 23.8px -2.5px hsl(var(--shadow-color) / 0.31);
-  --shadow-elevation-high:
-    -1px -0.2px 1.1px hsl(var(--shadow-color) / 0.29),
-    -5.1px -1px 5.8px -0.3px hsl(var(--shadow-color) / 0.29),
-    -9.1px -1.8px 10.4px -0.6px hsl(var(--shadow-color) / 0.29),
-    -13.9px -2.7px 15.9px -0.8px hsl(var(--shadow-color) / 0.29),
-    -20.3px -3.9px 23.3px -1.1px hsl(var(--shadow-color) / 0.29),
-    -29.3px -5.7px 33.6px -1.4px hsl(var(--shadow-color) / 0.29),
-    -41.6px -8.1px 47.7px -1.7px hsl(var(--shadow-color) / 0.29),
-    -58.3px -11.3px 66.8px -1.9px hsl(var(--shadow-color) / 0.29),
-    -80.1px -15.5px 91.8px -2.2px hsl(var(--shadow-color) / 0.29),
-    -108px -20.9px 123.8px -2.5px hsl(var(--shadow-color) / 0.29);
+  /* Simple, single elevation for popovers/menus (was a 10-layer stack) */
+  --shadow-elevation-high: 0 12px 32px rgba(0, 0, 0, 0.18);
 }
 
 * {
@@ -67,16 +47,11 @@
 
 html {
   font-size: 16px;
-  /* background: linear-gradient(
-    135deg,
-    rgba(var(--bg-color-rgb), 1) 0%,
-    rgba(var(--bg-color-rgb), 0.8) 100%
-  ); */
 }
 
 body {
   font-family: Lato;
-  line-height: 1.6;
+  line-height: 1.5;
   color: var(--text-light);
   background-color: var(--bg-color);
   transition:
@@ -101,7 +76,7 @@ body.dark-mode {
 }
 
 .dark-mode {
-  --border-color: rgba(255, 255, 255, 0.1);
+  --border-color: rgba(255, 255, 255, 0.08);
 }
 
 h1,
@@ -112,20 +87,20 @@ h5,
 h6 {
   font-weight: 600;
   line-height: 1.2;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 h1 {
   font-family: Goldman;
-  font-size: 2.5rem;
+  font-size: 2.25rem;
 }
 
 h2 {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
 }
 
 h3 {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
 }
 
 a {
@@ -133,19 +108,19 @@ a {
   color: var(--primary-color);
 }
 
-/* Dashboard.css additions */
+/* Header */
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .logout-button {
   background: none;
   border: 1px solid var(--accent-color);
   color: var(--accent-color);
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
+  padding: 0.4rem 0.9rem;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -172,80 +147,75 @@ select {
   font-size: inherit;
 }
 
-/* .whole-page { */
-/* background-image: url("./assets/backgrounds/main-bg.png"); */
-/* } */
-
 .app-container {
-  min-height: 100vh;
-  /* padding: 2rem; */
+  min-height: 90vh;
   max-width: 1200px;
   margin: 0 auto;
-  background-size: cover; /* Optional: makes sure the image covers the entire container */
-  /* backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px); */
+  background-size: cover;
 }
 
 .app-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* margin-bottom: 2rem; */
   border-bottom: 1px solid var(--border-color-2);
   position: sticky;
   top: 0;
   z-index: 10;
-  background: rgba(var(--card-bg), 0.95);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  /* box-shadow: var(--bar-shadow); */
-  padding: 0.5rem;
+  background: rgba(var(--card-bg-rgb), 0.75);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 0.65rem 1rem;
 }
 
 .app-header h1 {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-family: "Workbench", sans-serif;
   font-weight: 800;
   margin-bottom: 0;
 }
 
+/* Content spacing */
+.app-content {
+  padding: 1rem 0.5rem;
+}
+
 .cards-container {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Two columns of equal width */
-  gap: 12px;
-  margin-bottom: 1.5rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 0;
 }
 
 .card {
-  background-color: var(--card-bg);
-  border-radius: 12px;
-  padding: 1.5rem;
+  border-radius: 16px;
+  padding: 1.25rem;
   box-shadow: var(--shadow);
   margin-bottom: 0;
   transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px); /* For Safari */
-  border: 1px solid var(--border-color);
-  min-height: 300px; /* Or whatever height works for your content */
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  background-color: rgba(var(--card-bg-rgb), 0.6);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(var(--card-bg-rgb), 0.4);
+  min-height: 220px;
   display: flex;
   flex-direction: column;
 }
 
 .full-width-card {
-  grid-column: 1 / -1; /* Spans all columns */
+  grid-column: 1 / -1;
 }
 
 .target-form-card {
-  grid-column: 1 / -1; /* Spans all columns */
-  justify-self: center; /* Horizontally centers the card */
-  width: 100%; /* Control the card's width (adjust as needed) */
-  border-radius: 50px;
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: 100%;
+  border-radius: 24px;
 }
 
 .card:hover {
-  /* transform: translateY(-2px); */
   box-shadow: var(--hover-shadow);
 }
 
@@ -254,29 +224,20 @@ select {
 }
 
 .countdown-timer {
-  font-size: 2.5rem;
+  font-size: 2.25rem;
   font-weight: 700;
   color: var(--primary-color);
-  margin: 1rem 0;
+  margin: 0.5rem 0;
 }
 
-/* .form-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-} */
-
 .form-input {
-  padding: 0.75rem 1rem;
+  padding: 0.6rem 0.85rem;
   border: 1px solid transparent;
-  border-radius: 8px;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  /* background-color: rgba(var(--card-bg-rgb), 0.6); */
+  border-radius: 10px;
   color: var(--text-color);
   width: 100%;
-  transition: all 0.3s ease;
-  background-color: var(--bg-color);
+  transition: all 0.2s ease;
+  background-color: rgba(var(--bg-color-rgb), 0.6);
   font-size: 14px;
 }
 
@@ -286,7 +247,7 @@ select {
 
 .form-input:not(:disabled):hover {
   cursor: pointer;
-  border: 1px solid #666;
+  border: 1px solid var(--primary-color);
 }
 
 .form-input:focus {
@@ -295,7 +256,7 @@ select {
 }
 
 textarea.form-input {
-  min-height: 120px;
+  min-height: 100px;
   resize: none;
 }
 
@@ -308,24 +269,23 @@ textarea.form-input {
   background-color: var(--primary-color);
   color: white;
   border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+  padding: 0.6rem 1.25rem;
+  border-radius: 10px;
   font-weight: 500;
   transition: all 0.2s ease;
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .primary-button:hover {
   background-color: var(--button-hover);
-  /* transform: translateY(-1px); */
 }
 
 .secondary-button {
   background-color: transparent;
   color: var(--primary-color);
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
+  padding: 0.4rem 0.85rem;
+  border-radius: 8px;
 }
 
 .secondary-button:hover {
@@ -334,16 +294,16 @@ textarea.form-input {
 
 .sound-buttons {
   display: flex;
-  gap: 0.75rem;
+  gap: 0.5rem;
   flex-wrap: wrap;
-  margin-top: 1rem;
+  margin-top: 0.75rem;
 }
 
 .sound-button {
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.85rem;
   border: none;
-  border-radius: 6px;
-  background-color: var(--bg-color);
+  border-radius: 8px;
+  background-color: rgba(var(--bg-color-rgb), 0.6);
   color: var(--text-color);
 }
 
@@ -372,33 +332,33 @@ textarea.form-input {
 
 .plans-list {
   list-style: none;
-  margin-top: 1rem;
+  margin-top: 0.75rem;
   overflow-y: auto;
-  max-height: 550px;
-  padding: 10px;
+  max-height: 480px;
+  padding: 6px;
 }
 
 .plan-details h3 {
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.2rem;
 }
 
 .plan-meta {
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
   color: var(--text-light);
-  font-size: 0.875rem;
+  font-size: 0.85rem;
 }
 
 .plan-actions {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 
 .action-button {
-  padding: 0.5rem 0.75rem;
+  padding: 0.4rem 0.65rem;
   border: none;
-  border-radius: 6px;
-  font-size: 0.875rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
 }
 
 .complete-button {
@@ -414,44 +374,35 @@ textarea.form-input {
 .empty-state {
   text-align: center;
   color: var(--text-light);
-  padding: 1rem;
+  padding: 0.75rem;
 }
 
 .tabs-container {
   display: flex;
-  /* margin-right: 10px; */
-  gap: 10px;
-  /* border-bottom: 1px solid #ccc; */
+  gap: 6px;
 }
 
 .tab-button {
-  padding: 0.3rem 20px;
+  padding: 0.4rem 16px;
   background: none;
   border: 1px solid transparent;
-  border-radius: 50px;
+  border-radius: 999px;
   cursor: pointer;
-  font-size: 15px;
+  font-size: 14px;
   color: var(--text-light);
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .tab-button:hover {
-  color: #ffffffb6;
-  background: rgba(var(--primary-color-rgb), 0.1);
-  /* border-radius: 20px 20px 0 0; */
-  border: 1px solid var(--border-color-2);
+  color: var(--text-color);
+  background: rgba(var(--primary-color-rgb), 0.08);
 }
 
 .tab-button.active {
-  padding: 0.5rem 20px;
-  color: #ffffffb6;
-  font-weight: 500;
-  backdrop-filter: blur(50px);
-  -webkit-backdrop-filter: blur(50px);
-  background: rgba(var(--primary-color-rgb), 0.2);
-  border: 1px solid var(--border-color-2);
-  /* margin: -20px 0; */
-  /* padding-bottom: 0; */
+  color: var(--primary-color);
+  font-weight: 600;
+  background: rgba(var(--primary-color-rgb), 0.14);
+  border: 1px solid rgba(var(--primary-color-rgb), 0.2);
 }
 
 .desktop-tabs {
@@ -466,15 +417,15 @@ textarea.form-input {
   background: none;
   border: none;
   border-radius: 8px;
-  padding: 0.5rem;
-  color: var(--text-loght);
-  font-size: 1.2rem;
+  padding: 0.4rem;
+  color: var(--text-light);
+  font-size: 1.1rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  transition: all 0.3s ease;
+  width: 36px;
+  height: 36px;
+  transition: all 0.2s ease;
 }
 
 .hamburger-button:hover {
@@ -484,26 +435,28 @@ textarea.form-input {
 /* Mobile Dropdown Menu */
 .mobile-dropdown-menu {
   position: absolute;
-  top: calc(100% + 8px);
+  top: calc(100% + 6px);
   right: 0;
-  background: var(--card-bg);
+  background: rgba(var(--card-bg-rgb), 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--border-color);
-  border-radius: 12px;
+  border-radius: 14px;
   box-shadow: var(--shadow-elevation-high);
-  min-width: 200px;
+  min-width: 190px;
   overflow: hidden;
   z-index: 1000;
-  animation: slideDown 0.3s ease;
+  animation: slideDown 0.2s ease;
 }
 
 .mobile-menu-item {
   display: block;
   width: 100%;
-  padding: 0.75rem 1.5rem;
+  padding: 0.65rem 1.25rem;
   background: none;
   border: none;
   color: var(--text-color);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   text-align: left;
   transition: all 0.2s ease;
   cursor: pointer;
@@ -523,11 +476,10 @@ textarea.form-input {
   border-bottom: 1px solid var(--border-color);
 }
 
-/* Slide down animation */
 @keyframes slideDown {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-8px);
   }
   to {
     opacity: 1;
@@ -537,10 +489,7 @@ textarea.form-input {
 
 .mobile-dropdown-menu-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   z-index: 999;
   background: transparent;
 }
@@ -549,13 +498,12 @@ textarea.form-input {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 10px;
+  gap: 8px;
 }
 
 .logo-title {
-  /* display: none; */
-  height: 40px;
-  margin-left: 10px;
+  height: 34px;
+  margin-left: 8px;
 }
 
 .logo-icon {
@@ -565,20 +513,48 @@ textarea.form-input {
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .cards-container {
-    grid-template-columns: 1fr; /* Single column on smaller screens */
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    margin-bottom: 0;
   }
 
   .app-container {
+    padding: 0;
+  }
+
+  .app-content {
+    padding: 0.65rem 0.65rem 1.5rem;
+  }
+
+  .card {
     padding: 1rem;
+    min-height: 0;
+    border-radius: 14px;
+  }
+
+  .target-form-card {
+    border-radius: 18px;
   }
 
   .motivational-container {
-    height: 130px !important;
-    margin: 0 0 12px 0 !important;
+    height: 64px !important;
+    margin: 0 0 0.65rem 0 !important;
+    padding: 0 1rem;
+    border-radius: 12px;
+  }
+
+  .quote-container {
+    height: 36px;
   }
 
   .motivational-quote {
-    font-size: 1.7rem !important;
+    font-size: 1.05rem !important;
+    line-height: 1.3;
+  }
+
+  .countdown-timer {
+    font-size: 1.85rem;
+    margin: 0.35rem 0;
   }
 
   .plan-actions {
@@ -590,13 +566,34 @@ textarea.form-input {
     width: 100%;
   }
 
+  .form-input {
+    padding: 0.55rem 0.75rem;
+  }
+
+  .sound-buttons {
+    gap: 0.4rem;
+    margin-top: 0.6rem;
+  }
+
+  .sound-button {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.85rem;
+  }
+
+  .plans-list {
+    max-height: 60vh;
+    padding: 4px;
+    margin-top: 0.5rem;
+  }
+
   .study-plan-label {
     text-align: center;
   }
 
   h2 {
-    font-size: 1.4rem;
+    font-size: 1.15rem;
     text-align: center;
+    margin-bottom: 0.4rem;
   }
 
   .desktop-tabs {
@@ -608,16 +605,16 @@ textarea.form-input {
   }
 
   .app-header {
-    padding: 0.5rem;
-    flex-wrap: wrap;
+    padding: 0.45rem 0.65rem;
+    flex-wrap: nowrap;
   }
 
   .app-header h1 {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
   }
 
   .header-actions {
-    gap: 0.5rem;
+    gap: 0.35rem;
   }
 
   .logo-title {
@@ -626,8 +623,8 @@ textarea.form-input {
 
   .logo-icon {
     display: block;
-    height: 30px;
-    width: 80px;
+    height: 26px;
+    width: 64px;
     border-radius: 50%;
     object-fit: cover;
   }
@@ -635,34 +632,62 @@ textarea.form-input {
   .profile-popup-trigger .user-name {
     display: none;
   }
+
+  .mobile-dropdown-menu {
+    min-width: 170px;
+    right: 0.25rem;
+    border-radius: 12px;
+  }
+
+  .mobile-menu-item {
+    padding: 0.55rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .hamburger-button {
+    width: 34px;
+    height: 34px;
+  }
 }
 
-/* Animation for countdown */
-@keyframes pulse {
-  0% {
-    transform: scale(1);
+/* Small phones */
+@media (max-width: 380px) {
+  .app-header h1 {
+    font-size: 1.05rem;
   }
-  50% {
-    transform: scale(1.05);
+
+  .card {
+    padding: 0.85rem;
   }
-  100% {
-    transform: scale(1);
+
+  .motivational-container {
+    height: 56px !important;
+    padding: 0 0.75rem;
+  }
+
+  .motivational-quote {
+    font-size: 0.9rem !important;
+  }
+
+  .countdown-timer {
+    font-size: 1.6rem;
+  }
+
+  .action-button {
+    padding: 0.35rem 0.55rem;
+    font-size: 0.8rem;
   }
 }
 
-.countdown-timer {
-  animation: pulse 2s infinite;
-}
-
-/* Theme toggle styles */
+/* Theme toggle */
 .theme-toggle {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background-color: var(--bg-color);
+  gap: 0.4rem;
+  padding: 0.4rem 0.85rem;
+  background-color: rgba(var(--bg-color-rgb), 0.6);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: 10px;
   color: var(--text-color);
   font-weight: 500;
   transition: all 0.2s ease;
@@ -672,55 +697,15 @@ textarea.form-input {
   background-color: var(--border-color);
 }
 
-@supports (backdrop-filter: blur(16px)) or (-webkit-backdrop-filter: blur(16px)) {
-  .card {
-    background-color: rgba(var(--card-bg-rgb), 0.7);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-  }
-}
-
-.card::before {
-  content: none;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(255, 255, 255, 0.5);
-  z-index: -1;
-  transition: background-color 0.3s ease;
-}
-
-.dark-mode .card::before {
-  background-color: rgba(30, 30, 30, 0.75);
-}
-
-/* Specific card backgrounds */
-/* .target-date-card {
-  background: rgba(var(--card-bg-rgb), 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-radius: 16px;
-  padding: 1.5rem 0.5rem;
-  box-shadow: var(--shadow);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-} */
-
-.study-plan-form-card {
-  background-image: url("./assets/backgrounds/study-plan.jpg");
-}
-
-/* Ensure content is readable */
 .card > * {
   position: relative;
   z-index: 2;
 }
 
-/* Quote Animation Styles */
+/* Quote */
 .quote-container {
   position: relative;
-  height: 60px; /* Fixed height to prevent layout shift */
+  height: 48px;
   overflow: hidden;
 }
 
@@ -730,39 +715,37 @@ textarea.form-input {
   width: 100%;
   font-style: italic;
   color: var(--text-color);
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
   max-width: 600px;
-  line-height: 1.5;
-  transition: all 0.5s ease;
-  font-size: 2.5rem;
+  line-height: 1.4;
+  transition: all 0.4s ease;
+  font-size: 2rem;
 }
 
-/* Motivational Quote Container */
 .motivational-container {
   display: flex;
   justify-content: center;
+  align-items: center;
   position: relative;
-  height: 130px;
-  margin: 0 auto 2rem;
+  height: 90px;
+  margin: 0.75rem auto 1rem;
   max-width: 800px;
   text-align: center;
   overflow: hidden;
-  background: rgba(var(--bg-color-rgb), 0.4);
-  border-radius: 20px;
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  background: rgba(var(--bg-color-rgb), 0.35);
+  border-radius: 16px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   box-shadow: var(--shadow);
-  margin-top: 2rem;
-  padding: 0 2rem;
+  padding: 0 1.5rem;
 }
 
-/* Animation Styles */
 .animate-out {
-  animation: slideOutUp 0.5s forwards;
+  animation: slideOutUp 0.4s forwards;
 }
 
 .animate-in {
-  animation: slideInUp 0.5s forwards;
+  animation: slideInUp 0.4s forwards;
 }
 
 @keyframes slideOutUp {
@@ -787,7 +770,6 @@ textarea.form-input {
   }
 }
 
-/* Header adjustments */
 .header-content {
   display: flex;
   justify-content: space-between;
@@ -795,58 +777,46 @@ textarea.form-input {
   width: 100%;
 }
 
-/* Scroll Bar */
-
-/* Scrollbar Styling - Light Theme */
+/* Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(var(--bg-color-rgb), 0.5);
+  background: rgba(var(--bg-color-rgb), 0.4);
   border-radius: 10px;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(var(--border-color), 0.1);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--primary-color);
-  border-radius: 10px;
-  border: 2px solid var(--card-bg);
-  transition: all 0.3s ease;
   background: linear-gradient(
     135deg,
     var(--primary-color) 0%,
     var(--secondary-color) 100%
   );
+  border-radius: 10px;
+  border: 2px solid var(--card-bg);
+  transition: all 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--button-hover);
   background: linear-gradient(
     135deg,
     var(--button-hover) 0%,
     var(--secondary-color) 100%
   );
-  transform: scale(1.1);
 }
 
-/* Firefox Scrollbar Styling */
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--primary-color) rgba(var(--bg-color-rgb), 0.5);
+  scrollbar-color: var(--primary-color) rgba(var(--bg-color-rgb), 0.4);
 }
 
-/* Dark Theme Scrollbar */
 .dark-mode::-webkit-scrollbar-track {
-  background: rgba(var(--dark-bg-rgb), 0.8);
-  border-color: rgba(255, 255, 255, 0.05);
+  background: rgba(var(--dark-bg-rgb), 0.6);
 }
 
 .dark-mode::-webkit-scrollbar-thumb {
-  background: var(--dark-primary);
   background: linear-gradient(
     135deg,
     var(--dark-primary) 0%,
@@ -856,7 +826,6 @@ textarea.form-input {
 }
 
 .dark-mode::-webkit-scrollbar-thumb:hover {
-  background: var(--dark-secondary);
   background: linear-gradient(
     135deg,
     var(--dark-secondary) 0%,
@@ -865,34 +834,13 @@ textarea.form-input {
 }
 
 .dark-mode * {
-  scrollbar-color: var(--dark-primary) rgba(var(--dark-bg-rgb), 0.8);
+  scrollbar-color: var(--dark-primary) rgba(var(--dark-bg-rgb), 0.6);
 }
 
-/* Optional: Smooth scrollbar corners */
 ::-webkit-scrollbar-corner {
   background: transparent;
 }
 
-/* Optional: Active state for scrollbar */
-::-webkit-scrollbar-thumb:active {
-  background: var(--secondary-color);
-  background: linear-gradient(
-    135deg,
-    var(--secondary-color) 0%,
-    var(--button-hover) 100%
-  );
-}
-
-.dark-mode::-webkit-scrollbar-thumb:active {
-  background: var(--dark-secondary);
-  background: linear-gradient(
-    135deg,
-    var(--dark-secondary) 0%,
-    var(--dark-primary) 100%
-  );
-}
-
-/* Optional: For specific containers */
 .scrollable-container {
   scrollbar-width: thin;
   scrollbar-color: var(--primary-color) transparent;
@@ -918,36 +866,3 @@ textarea.form-input {
 .dark-mode .scrollable-container::-webkit-scrollbar-thumb {
   background: var(--dark-primary);
 }
-
-/* Alternative Roll Up Animation (uncomment to use) */
-/*
-@keyframes rollOut {
-  from {
-    transform: translateY(0) rotateX(0);
-    opacity: 1;
-  }
-  to {
-    transform: translateY(-50px) rotateX(90deg);
-    opacity: 0;
-  }
-}
-
-@keyframes rollIn {
-  from {
-    transform: translateY(50px) rotateX(-90deg);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0) rotateX(0);
-    opacity: 1;
-  }
-}
-
-.animate-out {
-  animation: rollOut 0.5s forwards;
-}
-
-.animate-in {
-  animation: rollIn 0.5s forwards;
-}
-*/
