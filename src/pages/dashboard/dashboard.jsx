@@ -45,6 +45,8 @@ import toast from "react-hot-toast";
 axios.defaults.baseURL =
   import.meta.env.VITE_API_URL || "http://localhost:5000";
 
+const TODO_STORAGE_KEY = "userTodos";
+
 // Add a request interceptor to include the auth token
 axios.interceptors.request.use(
   (config) => {
@@ -76,7 +78,10 @@ const Dashboard = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [targetDate, setTargetDate] = useState("");
   const [targetName, setTargetName] = useState("");
-  const [todos, setTodos] = useState("");
+  const [todos, setTodos] = useState([]);
+  const [todosLoading, setTodosLoading] = useState(true);
+  const [todoFilter, setTodoFilter] = useState("all");
+  const [todoToDelete, setTodoToDelete] = useState(null);
   const [countdown, setCountdown] = useState("");
   const [plans, setPlans] = useState([]);
   const [email, setEmail] = useState("");
@@ -128,6 +133,8 @@ const Dashboard = () => {
   const [currentQuote, setCurrentQuote] = useState(motivationalQuotes[0]);
   const [isAnimating, setIsAnimating] = useState(false);
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
+  const [showTodoDeleteDialog, setShowTodoDeleteDialog] = useState(false);
+  const [showTodoClearDialog, setShowTodoClearDialog] = useState(false);
   const [idsToDelete, setIdsToDelete] = useState([]);
 
   const quoteRef = useRef();
@@ -236,9 +243,6 @@ const Dashboard = () => {
         }
         if (response.data.studyPlans) {
           setPlans(response.data.studyPlans || []);
-        }
-        if (response.data.todos) {
-          setTodos(response.data.todos);
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -724,6 +728,134 @@ const Dashboard = () => {
     setShowReminderModal(false);
   };
 
+  const persistTodosLocal = (list) => {
+    localStorage.setItem(TODO_STORAGE_KEY, JSON.stringify(list));
+  };
+
+  const fetchTodos = async () => {
+    setTodosLoading(true);
+    try {
+      const response = await axios.get("/api/todos");
+      setTodos(response.data || []);
+      persistTodosLocal(response.data || []);
+    } catch (error) {
+      console.error("Error fetching todos:", error);
+      const saved = localStorage.getItem(TODO_STORAGE_KEY);
+      setTodos(saved ? JSON.parse(saved) : []);
+    } finally {
+      setTodosLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTodos();
+  }, []);
+
+  const handleAddTodo = async (newTodo) => {
+    const optimistic = {
+      id: Date.now().toString(),
+      completed: false,
+      createdAt: new Date().toISOString(),
+      ...newTodo,
+    };
+    const updated = [optimistic, ...todos];
+    setTodos(updated);
+    persistTodosLocal(updated);
+
+    try {
+      const response = await axios.post("/api/todos", newTodo);
+      const withServerId = updated.map((t) =>
+        t.id === optimistic.id ? response.data : t,
+      );
+      setTodos(withServerId);
+      persistTodosLocal(withServerId);
+      toast.success("Task added");
+    } catch (error) {
+      console.error("Error adding todo:", error);
+      toast.error("Saved locally — couldn't reach the server");
+    }
+  };
+
+  const handleToggleTodo = async (id) => {
+    const updated = todos.map((t) =>
+      t.id === id ? { ...t, completed: !t.completed } : t,
+    );
+    setTodos(updated);
+    persistTodosLocal(updated);
+
+    try {
+      await axios.patch(`/api/todos/${id}/toggle`);
+    } catch (error) {
+      console.error("Error toggling todo:", error);
+      toast.error("Couldn't sync task status");
+    }
+  };
+
+  const handleUpdateTodo = async (id, fields) => {
+    const updated = todos.map((t) => (t.id === id ? { ...t, ...fields } : t));
+    setTodos(updated);
+    persistTodosLocal(updated);
+
+    try {
+      await axios.put(`/api/todos/${id}`, fields);
+      toast.success("Task updated");
+    } catch (error) {
+      console.error("Error updating todo:", error);
+      toast.error("Couldn't sync the update");
+    }
+  };
+
+  const requestDeleteTodo = (id) => {
+    setTodoToDelete(id);
+    setShowTodoDeleteDialog(true);
+  };
+
+  const confirmDeleteTodo = async () => {
+    if (!todoToDelete) return;
+    setIsDeleting(true);
+    try {
+      const updated = todos.filter((t) => t.id !== todoToDelete);
+      setTodos(updated);
+      persistTodosLocal(updated);
+      await axios.delete(`/api/todos/${todoToDelete}`);
+      toast.success("Task deleted");
+    } catch (error) {
+      console.error("Error deleting todo:", error);
+      toast.error("Something went wrong when deleting the task");
+    } finally {
+      setIsDeleting(false);
+      setShowTodoDeleteDialog(false);
+      setTodoToDelete(null);
+    }
+  };
+
+  const cancelDeleteTodo = () => {
+    setShowTodoDeleteDialog(false);
+    setTodoToDelete(null);
+  };
+
+  const requestClearCompletedTodos = () => setShowTodoClearDialog(true);
+
+  const confirmTodoClearCompleted = async () => {
+    setIsDeleting(true);
+    const completedIds = todos.filter((t) => t.completed).map((t) => t.id);
+    try {
+      const updated = todos.filter((t) => !t.completed);
+      setTodos(updated);
+      persistTodosLocal(updated);
+      await Promise.all(
+        completedIds.map((id) => axios.delete(`/api/todos/${id}`)),
+      );
+      toast.success("Completed tasks cleared");
+    } catch (error) {
+      console.error("Error clearing completed todos:", error);
+      toast.error("Something went wrong clearing completed tasks");
+    } finally {
+      setIsDeleting(false);
+      setShowTodoClearDialog(false);
+    }
+  };
+
   const onLogout = () => {
     localStorage.clear();
     navigate("/");
@@ -885,7 +1017,19 @@ const Dashboard = () => {
               </>
             )}
 
-            {activeTab === "todos" && <TodoWidget />}
+            {activeTab === "todos" && (
+              <TodoWidget
+                todos={todos}
+                loading={todosLoading}
+                filter={todoFilter}
+                setFilter={setTodoFilter}
+                onAddTodo={handleAddTodo}
+                onToggle={handleToggleTodo}
+                onUpdate={handleUpdateTodo}
+                onDelete={requestDeleteTodo}
+                onClearCompleted={requestClearCompletedTodos}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -984,6 +1128,30 @@ const Dashboard = () => {
         confirmVariant="danger"
         loading={isDeleting}
         loadingLabel="Deleting..."
+      />
+
+      <ConfirmationPopup
+        isOpen={showTodoDeleteDialog}
+        message="Are you sure you want to delete this task?"
+        onConfirm={confirmDeleteTodo}
+        onCancel={cancelDeleteTodo}
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        confirmVariant="danger"
+        loading={isDeleting}
+        loadingLabel="Deleting..."
+      />
+
+      <ConfirmationPopup
+        isOpen={showTodoClearDialog}
+        message="Delete all completed tasks?"
+        onConfirm={confirmTodoClearCompleted}
+        onCancel={() => setShowTodoClearDialog(false)}
+        confirmLabel="Clear"
+        cancelLabel="Cancel"
+        confirmVariant="danger"
+        loading={isDeleting}
+        loadingLabel="Clearing..."
       />
 
       {selectedPlan && (

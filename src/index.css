@@ -151,6 +151,7 @@ select {
   min-height: 90vh;
   max-width: 1200px;
   margin: 0 auto;
+  padding-bottom: 50px;
   background-size: cover;
 }
 
@@ -247,7 +248,7 @@ select {
 
 .form-input:not(:disabled):hover {
   cursor: pointer;
-  border: 1px solid var(--primary-color);
+  border: 1px solid #666;
 }
 
 .form-input:focus {
@@ -276,7 +277,7 @@ textarea.form-input {
   font-size: 15px;
 }
 
-.primary-button:hover {
+.primary-button:not(:disabled):hover {
   background-color: var(--button-hover);
 }
 
@@ -327,7 +328,7 @@ textarea.form-input {
 
 .stop-button:disabled {
   opacity: 0.5;
-  cursor: not-allowed;
+  cursor: default;
 }
 
 .plans-list {

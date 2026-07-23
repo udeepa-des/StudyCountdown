@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaRegCalendarAlt } from "react-icons/fa";
+import PriorityDropdown from "../PriorityDropdown/PriorityDropdown";
+import CalendarPicker from "../CalenderPicker/Calendarpicker";
 
 const TodoForm = ({ onAddTodo }) => {
   const [text, setText] = useState("");
@@ -27,42 +29,47 @@ const TodoForm = ({ onAddTodo }) => {
     }
   };
 
+  const priorityOptions = [
+    { value: "low", label: "Low" },
+    { value: "medium", label: "Medium" },
+    { value: "high", label: "High" },
+  ];
+
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+
   return (
-    <form className="todo-form" onSubmit={handleSubmit}>
-      <input
-        type="text"
-        className="form-input todo-text-input"
-        placeholder="Add a new task..."
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        maxLength={200}
-      />
-
+    <form className="todo-form-card" onSubmit={handleSubmit}>
       <div className="todo-form-row">
-        <select
-          className="form-input todo-priority-select"
-          value={priority}
-          onChange={(e) => setPriority(e.target.value)}
-        >
-          <option value="low">Low</option>
-          <option value="medium">Medium</option>
-          <option value="high">High</option>
-        </select>
-
         <input
-          type="date"
-          className="form-input todo-date-input"
-          value={dueDate}
-          onChange={(e) => setDueDate(e.target.value)}
+          type="text"
+          className="form-input"
+          placeholder="Add a new task..."
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          maxLength={200}
         />
-
+        <CalendarPicker
+          value={dueDate}
+          onChange={(value) => setDueDate(value)}
+          placeholder="Select date"
+          minDate={yesterday.toISOString().split("T")[0]}
+          required
+          className="reminder-picker-flex"
+        />
+        <PriorityDropdown
+          options={priorityOptions}
+          value={priority}
+          onChange={(value) => setPriority(value)}
+          placeholder="Select priority..."
+        />
         <button
           type="submit"
           className="primary-button todo-add-button"
           disabled={!text.trim() || submitting}
         >
-          <FaPlus />
-          <span>Add</span>
+          <FaPlus size={12} />
+          <span>Create Todo</span>
         </button>
       </div>
     </form>

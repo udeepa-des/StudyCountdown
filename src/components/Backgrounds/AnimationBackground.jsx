@@ -7,6 +7,22 @@ import "./AnimationBackground.css";
 
 export const ANIMATIONS = [
   {
+    id: "fireflies",
+    label: "Fireflies",
+    icon: (
+      <svg viewBox="0 0 24 24" className="anim-toggle-icon">
+        <circle cx="12" cy="12" r="3" fill="currentColor" />
+        <path
+          d="M12 2V5M12 19V22M2 12H5M19 12H22M5 5L7 7M17 17L19 19M19 5L17 7M5 19L7 17"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+      </svg>
+    ),
+  },
+  {
     id: "chromawave",
     label: "Chroma Wave",
     icon: (
@@ -29,22 +45,6 @@ export const ANIMATIONS = [
         <path
           d="M12 2L13.8 8.2L20 10L13.8 11.8L12 18L10.2 11.8L4 10L10.2 8.2L12 2Z"
           fill="currentColor"
-        />
-      </svg>
-    ),
-  },
-  {
-    id: "fireflies",
-    label: "Fireflies",
-    icon: (
-      <svg viewBox="0 0 24 24" className="anim-toggle-icon">
-        <circle cx="12" cy="12" r="3" fill="currentColor" />
-        <path
-          d="M12 2V5M12 19V22M2 12H5M19 12H22M5 5L7 7M17 17L19 19M19 5L17 7M5 19L7 17"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
         />
       </svg>
     ),
@@ -75,9 +75,9 @@ const STORAGE_KEY = "sp_bg_animation";
 
 const getStoredAnimation = () => {
   try {
-    return localStorage.getItem(STORAGE_KEY) || "chromawave";
+    return localStorage.getItem(STORAGE_KEY) || "fireflies";
   } catch {
-    return "chromawave";
+    return "fireflies";
   }
 };
 
@@ -94,9 +94,9 @@ const AnimationBackground = ({ showToggle = true }) => {
   return (
     <>
       {/* Background layer */}
+      {active === "fireflies" && <FirefliesBackground />}
       {active === "chromawave" && <ChromaWaveBackground />}
       {active === "rymd" && <RymdBackground />}
-      {active === "fireflies" && <FirefliesBackground />}
       {active === "aurora" && <AuroraBackground />}
 
       {/* Toggle pills */}

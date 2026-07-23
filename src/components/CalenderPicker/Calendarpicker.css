@@ -114,7 +114,7 @@
 .cp-day.disabled {
   color: var(--text-light);
   opacity: 0.4;
-  cursor: not-allowed;
+  cursor: default;
 }
 
 .cp-day.today {

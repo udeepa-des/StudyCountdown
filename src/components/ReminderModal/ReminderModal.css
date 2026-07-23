@@ -230,7 +230,7 @@
 
 .reminder-snooze-btn.disabled {
   opacity: 0.5;
-  cursor: not-allowed;
+  cursor: default;
   background: #cccccc !important;
   color: #666 !important;
   transform: none !important;
