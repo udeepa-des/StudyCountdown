@@ -94,6 +94,15 @@ const Sidebar = ({
             >
               Study Plans
             </button>
+            <button
+              className={`dropdown-nav-item ${activeTab === "todos" ? "active" : ""}`}
+              onClick={() => {
+                setActiveTab("todos");
+                onClose();
+              }}
+            >
+              Todo
+            </button>
           </div>
         </nav>
 

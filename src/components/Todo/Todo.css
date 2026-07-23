@@ -247,6 +247,7 @@
 
 @media (max-width: 768px) {
   .todo-form-row {
+    grid-template-columns: 1fr;
     flex-wrap: wrap;
   }
 
@@ -262,5 +263,9 @@
 
   .todo-edit-row {
     flex-direction: column;
+  }
+
+  .todo-items-list {
+    grid-template-columns: 1fr;
   }
 }
